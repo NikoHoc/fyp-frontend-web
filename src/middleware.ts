@@ -8,10 +8,11 @@ export function middleware(request: NextRequest) {
   const userCookie = request.cookies.get("user")?.value;
 
   const isAuthPage = pathname === '/login';
-  
+  const isRootPath = pathname === "/";
+
   if (!token || !userCookie) {
     if (isAuthPage) return NextResponse.next();
-    return NextResponse.redirect(new URL("/login?error=must_login", request.url));
+    return NextResponse.redirect(new URL(isRootPath ? "/login" : "/login?error=must_login", request.url))
   }
 
   let user;
@@ -30,7 +31,7 @@ export function middleware(request: NextRequest) {
   const role = user.role;
 
   // redirect user ke dashboard page per role
-  if (pathname === "/") {
+  if (isRootPath) {
     return NextResponse.redirect(new URL(`/${role}`, request.url));
   }
 
