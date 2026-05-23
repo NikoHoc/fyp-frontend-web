@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
+import { useState, useEffect } from "react";
 import { Filter } from "lucide-react";
 import { useSettlement } from "@/hooks/useSettlement";
 import { formatDateFull, getTodayStr, getFirstDayOfMonthStr } from "@/utils/format";
 import { useSession } from "@/contexts/SessionContext";
 import SettlementHistoryTable from "@/components/settlements/SettlementHistoryTable";
 
-function ReportsPageContent() {
+
+export default function ReportsPage() {
   const { settlements, isLoading, fetchSettlements } = useSettlement();
   const { user, isLoadingSession } = useSession();
 
@@ -114,9 +114,3 @@ function ReportsPageContent() {
     </div>
   );
 }
-
-// 💡 FIX: Nonaktifkan SSR secara paksa untuk bypass error build
-export default dynamic(() => Promise.resolve(ReportsPageContent), { 
-  ssr: false,
-  loading: () => <div className="p-8 text-center animate-pulse text-gray-400 font-bold">Memuat Halaman...</div>
-});

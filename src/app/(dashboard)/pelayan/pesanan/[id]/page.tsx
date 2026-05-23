@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { ArrowLeft, UserRoundPlus } from "lucide-react";
 import { useDepots } from "@/hooks/useDepot";
@@ -15,7 +15,7 @@ import { useSession } from "@/contexts/SessionContext";
 import { useTables } from "@/hooks/useTables";
 import { supabaseRealtime } from "@/config/supabaseClient";
 
-export default function PelayanPesananPage() {
+function PelayanPesananContent() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -321,5 +321,19 @@ export default function PelayanPesananPage() {
         customerName={customerName}
       />
     </div>
+  );
+}
+
+export default function PelayanPesananPage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="flex h-screen items-center justify-center text-gray-400 font-bold animate-pulse">
+          Memuat Pos Owner...
+        </div>
+      }
+    >
+      <PelayanPesananContent />
+    </Suspense>
   );
 }

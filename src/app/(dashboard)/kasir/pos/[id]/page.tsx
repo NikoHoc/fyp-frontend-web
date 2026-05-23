@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { ArrowLeft, UserRoundPlus } from "lucide-react";
 import { useDepots } from "@/hooks/useDepot";
@@ -16,7 +16,7 @@ import { useSession } from "@/contexts/SessionContext";
 import { useTables } from "@/hooks/useTables";
 import { supabaseRealtime } from "@/config/supabaseClient";
 
-export default function PosPage() {
+function PosPageContent() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -340,5 +340,19 @@ export default function PosPage() {
         depot={depot}
       />
     </div>
+  );
+}
+
+export default function PosPage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="flex h-screen items-center justify-center text-gray-400 font-bold animate-pulse">
+          Memuat Pos Kasir...
+        </div>
+      }
+    >
+      <PosPageContent />
+    </Suspense>
   );
 }
