@@ -4,11 +4,12 @@ import { useState, useEffect, useCallback } from "react";
 import { useSession } from "@/contexts/SessionContext";
 import { useTransaction } from "@/hooks/useTransaction";
 import { supabaseRealtime } from "@/config/supabaseClient";
-import { Transaction, TransactionItem, CartItem } from "@/types";
+import { Transaction, TransactionItem, CartItem, Menu } from "@/types";
 import { formatRupiah, formatDateTime } from "@/utils/format";
 import { Smartphone, Printer, Clock } from "lucide-react";
 import CheckoutOrderModal from "@/components/orders/waiter/CheckoutOrderModal"; // Impor modal checker Anda
 import toast from "react-hot-toast";
+import { useCart } from "@/hooks/useCart";
 
 // 💡 KOMPONEN KARTU KITCHEN TICKET ONLINE
 const WaiterOnlineCard = ({ transaction, onOpenModal }: { transaction: Transaction, onOpenModal: (t: Transaction) => void }) => {
@@ -19,7 +20,7 @@ const WaiterOnlineCard = ({ transaction, onOpenModal }: { transaction: Transacti
   useEffect(() => {
     let isMounted = true;
     fetchTransactionById(transaction.id).then((data) => {
-      if (isMounted && data?.items) setItems(data.items);
+      if (isMounted && data?.transaction_items) setItems(data.transaction_items);
       if (isMounted) setIsLoadingItems(false);
     });
     return () => { isMounted = false; };
@@ -52,8 +53,8 @@ const WaiterOnlineCard = ({ transaction, onOpenModal }: { transaction: Transacti
             <ul className="space-y-2">
               {items.map(item => (
                 <li key={item.id} className="flex justify-between text-sm border-b border-gray-100/50 pb-1 last:border-none">
-                  <span className="font-black text-gray-800">{item.quantity}x {item.menu?.name}</span>
-                  {item.notes && <p className="text-[11px] text-red-500 font-medium block mt-0.5">Catatan: {item.notes}</p>}
+                  <span className="font-black text-gray-800">{item.quantity}x {item.menus?.name}</span>
+                  {item.note && <p className="text-[11px] text-red-500 font-medium block mt-0.5">Catatan: {item.note}</p>}
                 </li>
               ))}
             </ul>
@@ -65,7 +66,7 @@ const WaiterOnlineCard = ({ transaction, onOpenModal }: { transaction: Transacti
 
       <div className="pt-2 border-t border-gray-100 pl-2">
         <button 
-          onClick={() => onOpenModal({ ...transaction, items })} // Lempar data beserta item ter-load
+          onClick={() => onOpenModal({ ...transaction })} // Lempar data beserta item ter-load
           className="w-full flex items-center justify-center gap-2 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 shadow-sm transition-all cursor-pointer shadow-blue-100"
         >
           <Printer size={14} /> Buka Struk Checker
@@ -87,6 +88,7 @@ export default function PelayanOnlineTransactionsPage() {
   const [modalCartItems, setModalCartItems] = useState<CartItem[]>([]);
   const [selectedCustomerName, setSelectedCustomerName] = useState<string | null>(null);
   const [selectedTxId, setSelectedTxId] = useState<string | null>(null);
+  const { cartItems, setCartItems, addItem, removeItem, updateQuantity, updateNote, toggleHalfPortion, totals } = useCart();
 
   const loadData = useCallback(async (silent = false) => {
     if (!user?.depot_id) return;
@@ -124,28 +126,29 @@ export default function PelayanOnlineTransactionsPage() {
       return;
     }
 
-    const mappedCartItems: CartItem[] = t.items.map((item) => ({
+    const mappedCartItems = t.items.map((item: TransactionItem) => ({
       id: item.id,
+      unique_id: item.id.toString(),
       menu_id: item.menu_id,
       quantity: item.quantity,
-      price: Number(item.price),
-      is_half_portion: item.is_half_portion || false,
-      note: item.notes || "",
-      is_saved: true,               // 💡 Dipaksa true agar lolos filter `cartItems.filter(item => item.is_saved)` di dalam modal Anda
-      batch_number: item.batch_number || 1, // Jika pesanan online masuk sekaligus, default batch 1
+      quantity_paid: item.quantity_paid || 0,
+      price_at_time: item.price_at_time,
+      is_half_portion: item.is_half_portion,
+      note: item.note,
+      is_saved: true,
+      batch_number: item.batch_number,
+      serve_status: item.serve_status || 'cooking',
       menu: {
-        id: item.menu?.id || item.menu_id,
-        name: item.menu?.name || "Menu Tak Dikenal",
-        price: Number(item.menu?.price || item.price),
-        image_url: item.menu?.image_url || null,
-        category_id: item.menu?.category_id || 0,
-        category: item.menu?.category || { id: 0, name: "Lainnya" }
-      }
-    }));
+        ...item.menus,
+        id: item.menu_id,
+        price: item.price_at_time,
+        half_price: item.price_at_time,
+      } as Menu,
+    })) || [];
 
     setSelectedCustomerName(t.customer_name || "Pelanggan Aplikasi");
-    setSelectedTxId(`ONLINE #${t.id.slice(0, 8)}`); // Memanfaatkan string ID pendek untuk judul tabel meja di struk
-    setModalCartItems(mappedCartItems);
+    setSelectedTxId(`ONLINE #${t.id.slice(0, 8)}`); 
+    setCartItems(mappedCartItems);
     setIsModalOpen(true);
   };
 

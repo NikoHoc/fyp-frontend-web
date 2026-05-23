@@ -19,7 +19,7 @@ const OnlineOrderCard = ({ transaction, onAction }: { transaction: Transaction, 
   useEffect(() => {
     let isMounted = true;
     fetchTransactionById(transaction.id).then((data) => {
-      if (isMounted && data?.items) setItems(data.items);
+      if (isMounted && data?.transaction_items) setItems(data.transaction_items);
       if (isMounted) setIsLoadingItems(false);
     });
     return () => { isMounted = false; };
@@ -56,8 +56,8 @@ const OnlineOrderCard = ({ transaction, onAction }: { transaction: Transaction, 
             <ul className="space-y-2">
               {items.map(item => (
                 <li key={item.id} className="flex justify-between text-sm">
-                  <span className="font-semibold text-gray-700">{item.quantity}x {item.menu?.name}</span>
-                  <span className="text-gray-500">{formatRupiah(item.price * item.quantity)}</span>
+                  <span className="font-semibold text-gray-700">{item.quantity}x {item.menus?.name}</span>
+                  <span className="text-gray-500">{formatRupiah(item.price_at_time * item.quantity)}</span>
                 </li>
               ))}
             </ul>
@@ -88,7 +88,7 @@ const OnlineOrderCard = ({ transaction, onAction }: { transaction: Transaction, 
 
 export default function OnlineTransactionsPage() {
   const { user, isLoadingSession } = useSession();
-  const { fetchAllTransactions, updateStatus } = useTransaction(); // Pastikan Anda punya fungsi updateStatus di hooks Anda
+  const { fetchAllTransactions } = useTransaction(); // Pastikan Anda punya fungsi updateStatus di hooks Anda
   
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -139,7 +139,7 @@ export default function OnlineTransactionsPage() {
   const submitAccept = async () => {
     if (!selectedTx) return;
     try {
-      await updateStatus(selectedTx.id, { order_status: 'confirmed' });
+      // await updateStatus(selectedTx.id, { order_status: 'confirmed' });
       toast.success("Pesanan Diterima! Menunggu pembayaran pelanggan.");
       setIsAcceptModalOpen(false);
       loadData(true);
@@ -150,7 +150,7 @@ export default function OnlineTransactionsPage() {
     if (!selectedTx || !rejectReason) return toast.error("Alasan wajib diisi!");
     try {
       // 💡 Membatalkan pesanan
-      await updateStatus(selectedTx.id, { order_status: 'cancelled', rejection_reason: rejectReason });
+      // await updateStatus(selectedTx.id, { order_status: 'cancelled', rejection_reason: rejectReason });
       toast.success("Pesanan berhasil ditolak.");
       setIsRejectModalOpen(false);
       setRejectReason("");
