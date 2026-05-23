@@ -11,7 +11,6 @@ import CheckoutOrderModal from "@/components/orders/waiter/CheckoutOrderModal"; 
 import toast from "react-hot-toast";
 import { useCart } from "@/hooks/useCart";
 
-// 💡 KOMPONEN KARTU KITCHEN TICKET ONLINE
 const WaiterOnlineCard = ({ transaction, onOpenModal }: { transaction: Transaction, onOpenModal: (t: Transaction) => void }) => {
   const { fetchTransactionById } = useTransaction();
   const [items, setItems] = useState<TransactionItem[]>([]);
