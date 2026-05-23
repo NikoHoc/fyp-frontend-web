@@ -7,7 +7,10 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
   const userCookie = request.cookies.get("user")?.value;
 
+  const isAuthPage = pathname === '/login';
+  
   if (!token || !userCookie) {
+    if (isAuthPage) return NextResponse.next();
     return NextResponse.redirect(new URL("/login?error=must_login", request.url));
   }
 
@@ -31,6 +34,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${role}`, request.url));
   }
 
+  if (isAuthPage) {
+    return NextResponse.redirect(new URL(`/${role}`, request.url));
+  }
+
   // redirect kembali user jika ingin mengakses page diluar role mereka
   if (pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL(`/${role}?error=unauthorized`, request.url));
@@ -51,6 +58,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/",
+    "/login",
     "/admin/:path*",
     "/owner/:path*",
     "/kasir/:path*",
