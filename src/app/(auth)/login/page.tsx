@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useSearchParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function LoginPage() {
+// 💡 1. Ubah nama menjadi LoginContent
+function LoginContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading, error } = useAuth();
@@ -35,17 +36,13 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4 font-poppins">
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Depot Bakso Sapi Asli
+          <h1 className="text-2xl font-bold text-gray-900">
+            Sistem Internal <span className="text-blue-600">Depot</span>
           </h1>
-          <p className="text-sm text-gray-500 mt-2 font-montserrat">Portal Internal Pegawai</p>
+          <p className="text-gray-500 mt-2 text-sm">
+            Silakan login terlebih dahulu
+          </p>
         </div>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -53,7 +50,7 @@ export default function LoginPage() {
               Email
             </label>
             <input
-              type="text"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="text-black w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
@@ -92,5 +89,13 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex justify-center items-center">Memuat halaman login...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

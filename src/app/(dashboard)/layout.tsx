@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Sidebar from "@/components/layout/Sidebar";
@@ -8,12 +8,7 @@ import Navbar from "@/components/layout/Navbar";
 import { SessionProvider } from "@/contexts/SessionContext";
 import GlobalRealtimeNotification from "@/components/notifications/GlobalRealtimeNotification";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+function RouteErrorHandler() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -24,8 +19,21 @@ export default function DashboardLayout({
     }
   }, [searchParams, router]);
 
+  return null;
+}
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
   return (
     <SessionProvider>
+      <Suspense fallback={null}>
+        <RouteErrorHandler />
+      </Suspense>
       <div className="min-h-screen bg-gray-50 flex">
         <Sidebar 
           isCollapsed={isSidebarCollapsed} 
@@ -38,11 +46,11 @@ export default function DashboardLayout({
         >
           <Navbar />
           <GlobalRealtimeNotification />
-          <main className="p-6 flex-1 overflow-y-auto">
+          <main className="flex-1 p-4 md:p-8 overflow-x-hidden">
             {children}
           </main>
         </div>
       </div>
     </SessionProvider>
-  )
+  );
 }
