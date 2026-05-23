@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Filter } from "lucide-react";
 import { useSettlement } from "@/hooks/useSettlement";
 import { formatDateFull, getTodayStr, getFirstDayOfMonthStr } from "@/utils/format";
@@ -8,7 +8,7 @@ import { useSession } from "@/contexts/SessionContext";
 import SettlementHistoryTable from "@/components/settlements/SettlementHistoryTable";
 
 
-export default function ReportsPage() {
+function ReportsPageContent() {
   const { settlements, isLoading, fetchSettlements } = useSettlement();
   const { user, isLoadingSession } = useSession();
 
@@ -112,5 +112,13 @@ export default function ReportsPage() {
         role='kasir'
       />
     </div>
+  );
+}
+
+export default function ReportsPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center animate-pulse text-gray-400 font-bold">Memuat Halaman...</div>}>
+      <ReportsPageContent />
+    </Suspense>
   );
 }
