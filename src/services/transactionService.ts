@@ -66,5 +66,17 @@ export const transactionService = {
   deleteTransactionItem: async (transactionId: string, itemId: string) => {
     const response = await api.delete(`/transactions/${transactionId}/items/${itemId}`);
     return response.data;
-  }
+  },
+  
+  acceptOnlineOrder: async (id: string) => {
+    const response = await api.put(`/transactions/${id}/accept`);
+    return response.data;
+  },
+
+  rejectOnlineOrder: async (id: string, reason: string) => {
+    const response = await api.put(`/transactions/${id}/reject`, {
+      rejection_reason: reason
+    });
+    return response.data;
+  },
 };

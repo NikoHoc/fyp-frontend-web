@@ -2,7 +2,7 @@ export type Role = 'admin' | 'owner' | 'kasir' | 'pelayan' | 'pelanggan';
 export type TransactionType = 'dining' | 'online' | 'takeaway';
 export type OrderStatus = 'pending' | 'confirmed' | 'cooking' | 'ready' | 'completed' | 'cancelled';
 export type PaymentStatus = 'unpaid' | 'paid' | 'failed';
-export type PickupMethod = 'dine_in' | 'pickup_self' | 'driver';
+export type PickupMethod = 'dine_in' | 'self_pickup' | 'self_courier';
 
 export interface User {
   id: string; 
@@ -111,6 +111,7 @@ export interface Transaction {
   } | null;
   customer_id?: string | null; 
   customer_name?: string | null;
+  customer_phone?: string | null;
   type: TransactionType;
   order_status: OrderStatus;
   payment_status: PaymentStatus;
@@ -179,7 +180,7 @@ export interface CreateTransactionPayload {
   table_id?: number | null;
   customer_id?: string | null;
   customer_name?: string | null;
-  pickup_method?: "pickup_self" | "driver" | null;
+  pickup_method?: "self_pickup" | "self_courier" | null;
   use_tax?: boolean;
   items: CartItemPayload[];
 }

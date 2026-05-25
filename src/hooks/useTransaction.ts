@@ -146,6 +146,32 @@ export const useTransaction = () => {
     }
   };
 
+  const acceptOnlineOrder = async (transactionId: string) => {
+    setIsProcessing(true);
+    try {
+      const res = await transactionService.acceptOnlineOrder(transactionId);
+      return res;
+    } catch (error) {
+      handleApiError(error, "Gagal menerima pesanan");
+      throw error;
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const rejectOnlineOrder = async (transactionId: string, reason: string) => {
+    setIsProcessing(true);
+    try {
+      const res = await transactionService.rejectOnlineOrder(transactionId, reason);
+      return res;
+    } catch (error) {
+      handleApiError(error, "Gagal menolak pesanan");
+      throw error;
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return {
     isLoading,
     isProcessing,
@@ -159,5 +185,7 @@ export const useTransaction = () => {
     updateTransactionItemStatus,
     updateItemQuantity,
     deleteTransactionItem,
+    acceptOnlineOrder,
+    rejectOnlineOrder
   };
 };
