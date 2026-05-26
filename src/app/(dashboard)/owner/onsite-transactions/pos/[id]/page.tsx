@@ -331,10 +331,14 @@ function OwnerPosPageContent() {
       <CheckoutPaymentModal
         role="owner"
         isOpen={isPaymentModalOpen}
-        customerName={customerName}
+        customerName={customerName || "Guest"}
         onClose={() => setIsPaymentModalOpen(false)}
         transactionId={transactionId}
-        tableId={tableNumber || tableId || ""}
+        tableId={
+          initialType === "takeaway" 
+            ? "Bungkus" 
+            : `Meja ${tableNumber || tableId || "-"}`
+        }
         cartItems={cartItems}
         existingPayments={existingPayments}
         onSuccess={handlePaymentSuccess}

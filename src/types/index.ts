@@ -16,6 +16,7 @@ export interface User {
   depots?: {
     name: string;
   } | null;
+  total_transactions?: number;
 }
 export interface Depot {
   id: number;

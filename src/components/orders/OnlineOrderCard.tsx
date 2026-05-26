@@ -253,6 +253,15 @@ export default function OnlineOrderCard({
                     <Printer size={14} /> Nota
                   </button>
                 )}
+                {role === "pelayan" && (
+                  <button
+                    onClick={() => onPrintChecker?.(transaction)}
+                    className="py-2 px-3 bg-white border border-gray-200 text-gray-700 font-bold text-xs rounded-xl hover:bg-gray-50 flex items-center justify-center gap-1"
+                  >
+                    <Printer size={14} /> Checker
+                  </button>
+                )}
+
                 <button
                   onClick={() => onAction("complete", transaction)}
                   className="flex-1 py-2 bg-green-600 text-white font-black text-xs rounded-xl hover:bg-green-700 flex items-center justify-center gap-1"

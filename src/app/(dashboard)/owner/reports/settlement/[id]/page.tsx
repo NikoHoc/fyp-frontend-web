@@ -8,8 +8,7 @@ import { useSettlement } from "@/hooks/useSettlement";
 import DailySummaryCards from "@/components/settlements/DailySummaryCards";
 import PaymentBreakdownTable from "@/components/settlements/PaymentBreakdownTable";
 import DailyTransactionTable from "@/components/settlements/DailyTransactionTable";
-import { formatDateFull, formatDateTime } from "@/utils/format";
-import { Transaction } from "@/types";
+import { formatDateTime } from "@/utils/format";
 import ReportTransactionModal from "@/components/settlements/ReportTransactionModal";
 import ReportSettlementPrintModal from "@/components/settlements/ReportSettlementPrintModal";
 import { useSession } from "@/contexts/SessionContext";
@@ -20,7 +19,7 @@ export default function OwnerSettlementDetailPage() {
   const { settlementDetail, isLoading, fetchSettlementDetail } =
     useSettlement();
   const { depot, isLoadingSession } = useSession();
-  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
+  const [selectedTxId, setSelectedTxId] = useState<string>("");
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
   useEffect(() => {
@@ -90,13 +89,13 @@ export default function OwnerSettlementDetailPage() {
 
       <DailyTransactionTable
         transactions={transactions || []}
-        onViewReceipt={(tx) => setSelectedTx(tx)}
+        onViewReceipt={(id) => setSelectedTxId(id)}
       />
 
       <ReportTransactionModal
-        isOpen={!!selectedTx}
-        onClose={() => setSelectedTx(null)}
-        transaction={selectedTx}
+        isOpen={!!selectedTxId}
+        onClose={() => setSelectedTxId("")}
+        transactionId={selectedTxId}
         depot={depot}
       />
 

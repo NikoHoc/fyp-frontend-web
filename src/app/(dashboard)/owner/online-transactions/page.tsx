@@ -9,9 +9,10 @@ import OnlineOrderCard from "@/components/orders/OnlineOrderCard";
 import Modal from "@/components/ui/Modal";
 import toast from "react-hot-toast";
 import { ShoppingBag } from "lucide-react";
+import ReportTransactionModal from "@/components/settlements/ReportTransactionModal";
 
 export default function KasirOwnerOnlineTransactions() {
-  const { user } = useSession();
+  const { user, depot } = useSession();
   const { fetchAllTransactions, acceptOnlineOrder, rejectOnlineOrder, updateTransactionStatus } = useTransaction();
   
   const [orders, setOrders] = useState<Transaction[]>([]);
@@ -20,6 +21,9 @@ export default function KasirOwnerOnlineTransactions() {
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
   const [reason, setReason] = useState("");
 
+  const [isNotaModalOpen, setIsNotaModalOpen] = useState(false);
+  const [selectedNotaId, setSelectedNotaId] = useState("");
+  
   const loadOrders = async () => {
     if (!user?.depot_id) return;
     const data = await fetchAllTransactions(user.depot_id, 'active');
@@ -41,14 +45,12 @@ export default function KasirOwnerOnlineTransactions() {
     if (action === 'accept') setIsAcceptModalOpen(true);
     if (action === 'reject') setIsRejectModalOpen(true);
     
-    // Alur Dapur Baru: Siap Saji
     if (action === 'ready') {
       await updateTransactionStatus(tx.id, { order_status: 'ready' });
       toast.success("Pesanan selesai dimasak! Dipindahkan ke antrean penyerahan.");
       loadOrders();
     }
     
-    // Alur Akhir: Selesai Ambil
     if (action === 'complete') {
       await updateTransactionStatus(tx.id, { order_status: 'completed' });
       toast.success("Transaksi ditutup! Berhasil diselesaikan.");
@@ -57,10 +59,10 @@ export default function KasirOwnerOnlineTransactions() {
   };
 
   const handlePrintNota = (tx: Transaction) => {
-    toast.success(`Membuka Struk Nota untuk #${tx.id.slice(0,8)}`);
+    setSelectedNotaId(tx.id);
+    setIsNotaModalOpen(true);
   };
-
-  // Pengelompokan Menjadi 2 Section Strategis
+  
   const unfulfilledOrders = orders.filter(o => o.order_status === 'pending' || o.order_status === 'confirmed');
   const activeKitchenOrders = orders.filter(o => o.order_status === 'cooking' || o.order_status === 'ready');
 
@@ -137,6 +139,13 @@ export default function KasirOwnerOnlineTransactions() {
           Tolak Pesanan
         </button>
       </Modal>
+
+      <ReportTransactionModal 
+        isOpen={isNotaModalOpen} 
+        onClose={() => setIsNotaModalOpen(false)} 
+        transactionId={selectedNotaId} 
+        depot={depot}
+      />
     </div>
   );
 }

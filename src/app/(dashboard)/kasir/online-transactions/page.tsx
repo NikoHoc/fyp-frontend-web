@@ -9,9 +9,10 @@ import OnlineOrderCard from "@/components/orders/OnlineOrderCard";
 import Modal from "@/components/ui/Modal";
 import toast from "react-hot-toast";
 import { ShoppingBag } from "lucide-react";
+import ReportTransactionModal from "@/components/settlements/ReportTransactionModal";
 
 export default function KasirOnlineTransactions() {
-  const { user } = useSession();
+  const { user, depot } = useSession();
   const { fetchAllTransactions, acceptOnlineOrder, rejectOnlineOrder, updateTransactionStatus } = useTransaction();
   
   const [orders, setOrders] = useState<Transaction[]>([]);
@@ -19,6 +20,9 @@ export default function KasirOnlineTransactions() {
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
   const [reason, setReason] = useState("");
+
+  const [isNotaModalOpen, setIsNotaModalOpen] = useState(false);
+  const [selectedNotaId, setSelectedNotaId] = useState("");
 
   const loadOrders = async () => {
     if (!user?.depot_id) return;
@@ -55,7 +59,8 @@ export default function KasirOnlineTransactions() {
   };
 
   const handlePrintNota = (tx: Transaction) => {
-    toast.success(`Membuka Struk Nota untuk #${tx.id.split('-')[0]}`);
+    setSelectedNotaId(tx.id);
+    setIsNotaModalOpen(true);
   };
 
   const unfulfilledOrders = orders.filter(o => o.order_status === 'pending' || o.order_status === 'confirmed');
@@ -129,6 +134,13 @@ export default function KasirOnlineTransactions() {
           Tolak Pesanan
         </button>
       </Modal>
+
+      <ReportTransactionModal 
+        isOpen={isNotaModalOpen} 
+        onClose={() => setIsNotaModalOpen(false)} 
+        transactionId={selectedNotaId} 
+        depot={depot}
+      />
     </div>
   );
 }

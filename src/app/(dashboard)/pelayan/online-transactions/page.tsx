@@ -4,20 +4,25 @@ import { useState, useEffect } from "react";
 import { useSession } from "@/contexts/SessionContext";
 import { useTransaction } from "@/hooks/useTransaction";
 import { supabaseRealtime } from "@/config/supabaseClient";
-import { Transaction } from "@/types";
+import { CartItem, Menu, Transaction, TransactionItem } from "@/types";
 import OnlineOrderCard from "@/components/orders/OnlineOrderCard";
 import toast from "react-hot-toast";
+import CheckoutOrderModal from "@/components/orders/waiter/CheckoutOrderModal";
 
 export default function PelayanOnlineTransactions() {
   const { user } = useSession();
   const { fetchAllTransactions, updateTransactionStatus } = useTransaction();
   
   const [orders, setOrders] = useState<Transaction[]>([]);
+  const [isCheckerModalOpen, setIsCheckerModalOpen] = useState(false);
+  const [checkerCartItems, setCheckerCartItems] = useState<CartItem[]>([]);
+  const [selectedCheckerId, setSelectedCheckerId] = useState("");
+  const [selectedCustomerName, setSelectedCustomerName] = useState("");
 
   const loadOrders = async () => {
     if (!user?.depot_id) return;
     const data = await fetchAllTransactions(user.depot_id, 'active');
-    // Pelayan HANYA melihat pesanan yang sudah lunas dan sedang diproses/selesai masak
+
     setOrders(data.filter(t => t.type === 'online' && (t.order_status === 'cooking' || t.order_status === 'ready') && t.payment_status === 'paid'));
   };
 
@@ -46,7 +51,31 @@ export default function PelayanOnlineTransactions() {
   };
 
   const handlePrintChecker = (tx: Transaction) => {
-    toast.success(`Membuka Modal Checker Dapur untuk #${tx.id.split('-')[0]}`);
+    const mappedItems = tx.transaction_items?.map((item: TransactionItem) => ({
+      id: item.id,
+      unique_id: item.id.toString(),
+      menu_id: item.menu_id,
+      quantity: item.quantity,
+      is_half_portion: item.is_half_portion,
+      note: item.note || "",
+      is_saved: true,
+      batch_number: item.batch_number,
+      quantity_paid: item.quantity_paid || 0,
+      price_at_time: item.price_at_time,
+      created_at: item.created_at,
+      serve_status: item.serve_status || 'cooking',
+      menu: {
+        ...item.menus,
+        id: item.menu_id,
+        price: item.price_at_time,
+        half_price: item.price_at_time,
+      } as Menu,
+    })) || [];
+
+    setCheckerCartItems(mappedItems);
+    setSelectedCheckerId(`${tx.id.split('-')[0].toUpperCase()}`);
+    setSelectedCustomerName(tx.customer_name || "Pelanggan Online");
+    setIsCheckerModalOpen(true);
   };
 
   return (
@@ -84,6 +113,14 @@ export default function PelayanOnlineTransactions() {
           </div>
         )}
       </div>
+      <CheckoutOrderModal 
+        isOpen={isCheckerModalOpen}
+        onClose={() => setIsCheckerModalOpen(false)}
+        cartItems={checkerCartItems}
+        tableId={selectedCheckerId}
+        customerName={selectedCustomerName}
+        orderType="online"
+      />
     </div>
   );
 }

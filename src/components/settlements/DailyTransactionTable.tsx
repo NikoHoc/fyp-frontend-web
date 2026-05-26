@@ -5,7 +5,7 @@ import { Receipt } from "lucide-react";
 
 interface Props {
   transactions: Transaction[];
-  onViewReceipt?: (transaction: Transaction) => void;
+  onViewReceipt?: (transactionId: string) => void;
 }
 
 export default function DailyTransactionTable({ transactions, onViewReceipt }: Props) {
@@ -40,34 +40,37 @@ export default function DailyTransactionTable({ transactions, onViewReceipt }: P
                     <div className="font-bold text-gray-600">{tx.customer_name || "Pelanggan"}</div>
                     <div className="text-xs text-gray-400">{formatDateTime(tx.created_at)}</div>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1.5">
-                      <span className={`text-xs font-black px-2 py-0.5 rounded-md uppercase ${
-                        tx.type === 'dining' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'
-                      }`}>
-                        {tx.type}
-                      </span>
-                      <span className=" font-bold text-gray-400">/</span>
-                      <span className="font-bold text-gray-700">
-                        {tx.type === 'dining' ? (tx.tables?.table_number) : '-'}
-                      </span>
-                    </div>
+                  <td className="px-4 py-3 text-xs font-bold text-gray-800">
+                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${
+                      tx.type === 'dining' ? 'bg-orange-50 text-orange-600' :
+                      tx.type === 'online' ? 'bg-purple-50 text-purple-700' :
+                      'bg-blue-50 text-blue-600'
+                    }`}>
+                      {tx.type}
+                    </span>
+                    <span className="text-gray-400 font-medium mx-1.5">/</span>
+                    <span className="text-gray-500 font-bold capitalize">
+                      {tx.type === 'dining' ? (tx.tables?.table_number || tx.table_id || '-') : 
+                       tx.type === 'takeaway' ? '-' : 
+                       tx.pickup_method === 'self_courier' ? 'Kurir Sendiri' : 
+                       tx.pickup_method === 'self_pickup' ? 'Ambil Sendiri' : '-'}
+                    </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-xs text-blue-500 font-bold uppercase">{tx.payment_method || "Split"}</span>
+                    <span className="text-xs font-bold uppercase">{tx.payment_method || "Split"}</span>
                   </td>
                   <td className="px-4 py-3 text-right font-medium text-gray-600">{formatRupiah(tx.subtotal)}</td>
                   <td className="px-4 py-3 text-right font-medium text-red-500">{formatRupiah(tx.tax_amount)}</td>
                   <td className="px-4 py-3 font-black text-gray-800 text-right">{formatRupiah(tx.grand_total)}</td>
-                    <td className="px-4 py-3 text-center">
-                      <button 
-                        onClick={() => onViewReceipt?.(tx)}
-                        className="bg-gray-100 hover:bg-gray-200 p-2 rounded-xl transition-colors text-gray-600 cursor-pointer"
-                        title="Lihat Struk"
-                      >
-                        <Eye size={16} />
-                      </button>
-                    </td>
+                  <td className="px-4 py-3 text-center">
+                    <button 
+                      onClick={() => onViewReceipt?.(tx.id)}
+                      className="bg-gray-100 hover:bg-gray-200 p-2 rounded-xl transition-colors text-gray-600 cursor-pointer"
+                      title="Lihat Struk"
+                    >
+                      <Eye size={16} />
+                    </button>
+                  </td>
                 </tr>
               ))
             ) : (

@@ -333,7 +333,11 @@ function PosPageContent() {
         customerName={customerName}
         onClose={() => setIsPaymentModalOpen(false)}
         transactionId={transactionId}
-        tableId={tableNumber || tableId || ""}
+        tableId={
+          initialType === "takeaway" 
+            ? "Bungkus" 
+            : `Meja ${tableNumber || tableId || "-"}`
+        }
         cartItems={cartItems}
         existingPayments={existingPayments}
         onSuccess={handlePaymentSuccess}

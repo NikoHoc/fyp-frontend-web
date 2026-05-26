@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, Tag, CheckCircle2, Loader2, CircleUser, Calendar, MapPin } from "lucide-react";
+import { X, Tag, CheckCircle2, Loader2, CircleUser, Calendar, Info } from "lucide-react";
 import { formatRupiah, formatDateTime } from "@/utils/format";
 import { Depot, Transaction, TransactionItem, TransactionPayment, TransactionPaymentItem } from "@/types";
 import ReceiptPreview, { ReceiptData } from "@/components/orders/cashier/ReceiptPreview";
@@ -11,11 +11,11 @@ import { printReceiptHTML } from "@/utils/printHandler";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  transaction: Transaction | null;
+  transactionId: string;
   depot: Depot | null;
 }
 
-export default function ReportTransactionModal({ isOpen, onClose, transaction, depot }: Props) {
+export default function ReportTransactionModal({ isOpen, onClose, transactionId, depot }: Props) {
   const [transactionDetail, setTransactonDetail] = useState<Transaction | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   
@@ -25,16 +25,16 @@ export default function ReportTransactionModal({ isOpen, onClose, transaction, d
   const handlePrint = () => {
     const printContent = receiptRef.current?.innerHTML;
     if (printContent) {
-        printReceiptHTML(printContent, `Cetak Ulang - ${transaction?.id}`);
+        printReceiptHTML(printContent, `Cetak Ulang - ${transactionId}`);
     }
   };
 
   useEffect(() => {
-    if (isOpen && transaction?.id) {
+    if (isOpen && transactionId) {
       const fetchDetail = async () => {
         setIsLoadingDetail(true);
         try {
-          const transactionData = await fetchTransactionById(transaction.id);
+          const transactionData = await fetchTransactionById(transactionId);
           
           if (transactionData) {
             setTransactonDetail(transactionData);
@@ -49,9 +49,9 @@ export default function ReportTransactionModal({ isOpen, onClose, transaction, d
     } else {
       setTransactonDetail(null);
     }
-  }, [isOpen, transaction, fetchTransactionById]);
+  }, [isOpen, transactionId, fetchTransactionById]);
 
-  if (!isOpen || !transaction) return null;
+  if (!isOpen || !transactionId) return null;
 
   let rcp: ReceiptData | null = null;
   if (transactionDetail) {
@@ -90,7 +90,7 @@ export default function ReportTransactionModal({ isOpen, onClose, transaction, d
         <div className="bg-white px-6 py-4 flex items-center justify-between border-b border-gray-100 shrink-0">
           <div>
             <h2 className="text-lg font-black text-gray-800">Detail Histori Transaksi</h2>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">ID: {transaction.id}</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">ID: {transactionId}</p>
           </div>
           <div className="flex items-center gap-3">
             <button onClick={onClose} className="cursor-pointer p-2.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-2xl transition-colors">
@@ -103,51 +103,55 @@ export default function ReportTransactionModal({ isOpen, onClose, transaction, d
           <div className="w-full lg:w-[55%] flex flex-col bg-white border-r border-gray-200 overflow-y-auto custom-scrollbar p-6 space-y-6">
             <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">Rincian Transaksi</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-white p-4 rounded-2xl border border-gray-100 flex items-center gap-3 shadow-sm">
-                <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><CircleUser size={20} /></div>
-                <div className="min-w-0">
-                  <div className="text-[10px] font-bold text-gray-400 uppercase">Pelanggan</div>
-                  <div className="text-sm font-black text-gray-800 truncate">{transaction.customer_name || "Guest"}</div>
+              {/* KARTU 1: NAMA PELANGGAN */}
+              <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center gap-3">
+                <CircleUser className="text-blue-500" size={24} />
+                <div>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase">Nama Pelanggan</p>
+                  <p className="text-sm font-black text-gray-700">{transactionDetail?.customer_name || 'Guest'}</p>
                 </div>
               </div>
-              <div className="bg-white p-4 rounded-2xl border border-gray-100 flex items-center gap-3 shadow-sm">
-                <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center"><Tag size={20} /></div>
+              <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center gap-3">
+                <Calendar className="text-emerald-500" size={24} />
                 <div>
-                  <div className="text-[10px] font-bold text-gray-400 uppercase">Tipe</div>
-                  <div className="text-sm font-black text-gray-800 capitalize">{transaction.type}</div>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase">Waktu Transaksi</p>
+                  <p className="text-sm font-black text-gray-700">{transactionDetail ? formatDateTime(transactionDetail.created_at) : '-'}</p>
                 </div>
               </div>
-              <div className="bg-white p-4 rounded-2xl border border-gray-100 flex items-center gap-3 shadow-sm">
-                <div className="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center"><Calendar size={20} /></div>
+
+              <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center gap-3">
+                <Tag className="text-purple-500" size={24} />
                 <div>
-                  <div className="text-[10px] font-bold text-gray-400 uppercase">Waktu Pesan</div>
-                  <div className="text-sm font-black text-gray-800">{formatDateTime(transactionDetail?.created_at || transaction.created_at || "")}</div>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase">Tipe Transaksi</p>
+                  <p className="text-sm font-black text-gray-700">{transactionDetail?.type || '-'}</p>
                 </div>
               </div>
-              <div className="bg-white p-4 rounded-2xl border border-gray-100 flex items-center gap-3 shadow-sm">
-                <div className="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center"><MapPin size={20} /></div>
+
+              <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-center gap-3">
+                <Info className="text-amber-500" size={24} />
                 <div>
-                  <div className="text-[10px] font-bold text-gray-400 uppercase">Meja</div>
-                  <div className="text-sm font-black text-gray-800">
-                    {(transactionDetail?.type === 'dining' || transaction?.type === 'dining') 
-                      ? (transactionDetail?.tables?.table_number || transactionDetail?.table_id || "-") 
-                      : "BUNGKUS"}
-                  </div>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase">Meja / Layanan</p>
+                  <p className="text-sm font-black text-gray-700 capitalize">
+                    {transactionDetail?.type === 'dining' ? `Meja ${transactionDetail?.tables?.table_number || transactionDetail?.table_id || '-'}` : 
+                     transactionDetail?.type === 'takeaway' ? 'Bungkus' : 
+                     transactionDetail?.pickup_method === 'self_courier' ? 'Kurir Sendiri' : 
+                     transactionDetail?.pickup_method === 'self_pickup' ? 'Ambil Sendiri' : '-'}
+                  </p>
                 </div>
               </div>
             </div>
             <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between divide-x divide-gray-400">
               <div className="flex-1 pr-4">
                 <div className="text-[10px] font-bold text-gray-400 uppercase">Subtotal</div>
-                <div className="text-sm font-black text-gray-600">{formatRupiah(transactionDetail?.subtotal || transaction.subtotal)}</div>
+                <div className="text-sm font-black text-gray-600">{formatRupiah(transactionDetail?.subtotal || 0)}</div>
               </div>
               <div className="flex-1 px-4">
                 <div className="text-[10px] font-bold text-gray-400 uppercase">Pajak</div>
-                <div className="text-sm font-black text-red-500">{formatRupiah(transactionDetail?.tax_amount || transaction.tax_amount)}</div>
+                <div className="text-sm font-black text-red-500">{formatRupiah(transactionDetail?.tax_amount || 0)}</div>
               </div>
               <div className="flex-1 pl-4 text-right">
                 <div className="text-[10px] font-bold text-gray-400 uppercase">Grand Total</div>
-                <div className="text-lg font-black text-green-600">{formatRupiah(transactionDetail?.grand_total || transaction.grand_total)}</div>
+                <div className="text-lg font-black text-green-600">{formatRupiah(transactionDetail?.grand_total || 0)}</div>
               </div>
             </div>
 
@@ -230,9 +234,14 @@ export default function ReportTransactionModal({ isOpen, onClose, transaction, d
             <ReceiptPreview 
               receiptRef={receiptRef}
               rcp={rcp}
-              tableId={transactionDetail?.tables?.table_number || transactionDetail?.table_id?.toString() || '-'}
-              transactionId={transaction.id}
-              customerName={transaction.customer_name || 'Pelanggan'}
+              // tableId={transactionDetail?.tables?.table_number || transactionDetail?.table_id?.toString() || '-'}
+              tableId={
+                transactionDetail?.type === 'dining' ? (transactionDetail?.tables?.table_number || transactionDetail?.table_id || '-') : 
+                transactionDetail?.type === 'takeaway' ? 'Bungkus' : 
+                transactionDetail?.pickup_method === 'self_courier' ? 'Kurir Sendiri' : 'Ambil Sendiri'
+              }
+              transactionId={transactionId}
+              customerName={transactionDetail?.customer_name || 'Pelanggan'}
               activeSegmentToView={null}
               showMasterReceipt={true}
               setShowMasterReceipt={() => {}}

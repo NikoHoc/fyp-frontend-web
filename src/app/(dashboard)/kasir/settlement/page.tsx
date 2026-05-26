@@ -7,7 +7,6 @@ import DailySummaryCards from "@/components/settlements/DailySummaryCards";
 import PaymentBreakdownTable from "@/components/settlements/PaymentBreakdownTable";
 import DailyTransactionTable from "@/components/settlements/DailyTransactionTable";
 import { formatDateFull } from "@/utils/format";
-import { Transaction } from "@/types";
 import toast from "react-hot-toast";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import ReportTransactionModal from "@/components/settlements/ReportTransactionModal";
@@ -20,7 +19,7 @@ export default function CashierSettlementPage() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { user: userData, depot, isLoadingSession } = useSession();
 
-  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
+  const [selectedTxId, setSelectedTxId] = useState<string>("");
 
   useEffect(() => {
     if (!isLoadingSession && userData?.depot_id) {
@@ -86,9 +85,9 @@ export default function CashierSettlementPage() {
 
       <PaymentBreakdownTable summary={summary ?? null} />
 
-      <DailyTransactionTable 
-        transactions={transactions ?? []} 
-        onViewReceipt={(tx) => setSelectedTx(tx)}
+      <DailyTransactionTable
+        transactions={transactions ?? []}
+        onViewReceipt={(id) => setSelectedTxId(id)}
       />
 
       <ConfirmModal
@@ -102,10 +101,10 @@ export default function CashierSettlementPage() {
         isLoading={isSubmitting}
       />
 
-      <ReportTransactionModal 
-        isOpen={!!selectedTx}
-        onClose={() => setSelectedTx(null)}
-        transaction={selectedTx}
+      <ReportTransactionModal
+        isOpen={!!selectedTxId}
+        onClose={() => setSelectedTxId("")}
+        transactionId={selectedTxId}
         depot={depot}
       />
     </div>

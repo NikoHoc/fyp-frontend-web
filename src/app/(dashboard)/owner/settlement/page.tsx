@@ -22,7 +22,7 @@ export default function OwnerSettlementPage() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { user: userData, depot, isLoadingSession } = useSession();
 
-  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
+  const [selectedTxId, setSelectedTxId] = useState<string>("");
 
   useEffect(() => {
     if (!isLoadingSession && userData?.depot_id) {
@@ -110,7 +110,7 @@ export default function OwnerSettlementPage() {
 
       <DailyTransactionTable
         transactions={transactions ?? []}
-        onViewReceipt={(tx) => setSelectedTx(tx)}
+        onViewReceipt={(id) => setSelectedTxId(id)}
       />
 
       <ConfirmModal
@@ -125,9 +125,9 @@ export default function OwnerSettlementPage() {
       />
 
       <ReportTransactionModal
-        isOpen={!!selectedTx}
-        onClose={() => setSelectedTx(null)}
-        transaction={selectedTx}
+        isOpen={!!selectedTxId}
+        onClose={() => setSelectedTxId("")}
+        transactionId={selectedTxId}
         depot={depot}
       />
     </div>

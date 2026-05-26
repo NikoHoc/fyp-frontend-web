@@ -11,6 +11,7 @@ interface CheckoutOrderModalProps {
   cartItems: CartItem[];
   tableId: string | null;
   customerName: string | null;
+  orderType?: "dining" | "takeaway" | "online" | string;
 }
 
 type FilterType = "all" | "food" | "drink";
@@ -20,7 +21,8 @@ export default function CheckoutOrderModal({
   onClose,
   cartItems,
   tableId,
-  customerName
+  customerName,
+  orderType
 }: CheckoutOrderModalProps) {
   const [selectedBatch, setSelectedBatch] = useState<number | "all">("all");
   const [filterType, setFilterType] = useState<FilterType>("all");
@@ -170,7 +172,7 @@ export default function CheckoutOrderModal({
                     {items.map((item, idx) => (
                       <div key={idx} className="p-3">
                         <h4 className="font-bold text-gray-800 text-sm leading-tight">
-                          {item.quantity} x {item.menu.name}
+                          {item.quantity}  {item.menu.name}
                         </h4>
                         {item.is_half_portion && <p className="text-[10px] font-bold text-purple-600 mt-1 uppercase"># 1/2 Porsi</p>}
                         {item.note && <p className="text-[10px] text-orange-500 mt-1 uppercase"># {item.note}</p>}
@@ -215,7 +217,8 @@ export default function CheckoutOrderModal({
             <div className="text-center border-b border-gray-300 pb-4 mb-4">
               <h2 className="font-bold text-xl border-b border-gray-300 uppercase tracking-widest">{getReceiptTitle()}</h2>
               <h3 className="font-bold text-sm mt-1 uppercase">
-                {tableId ? `PESANAN MEJA ${tableId}` : "BUNGKUS"}
+                {orderType === 'online' ? 'PESANAN ONLINE: ' : orderType === 'takeaway' ? 'PESANAN: ' : 'PESANAN MEJA: '}
+                {orderType === 'online' ? ` ${tableId}` : orderType === 'takeaway' ? ' BUNGKUS' : tableId}
               </h3>
               {customerName && (
                 <p className="font-black text-sm uppercase mt-1 border border-black inline-block px-2">
@@ -224,6 +227,7 @@ export default function CheckoutOrderModal({
               )}
               <p className="text-[10px] text-gray-500 mt-1">{new Date().toLocaleString("id-ID")}</p>
             </div>
+            
             <div className="space-y-4">
               {previewItems.length === 0 ? (
                 <p className="text-center text-[10px] text-gray-400 py-4 italic">Item kosong</p>

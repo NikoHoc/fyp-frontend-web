@@ -319,6 +319,7 @@ function PelayanPesananContent() {
         cartItems={cartItems}
         tableId={tableNumber || tableId || ""}
         customerName={customerName}
+        orderType={orderType}
       />
     </div>
   );

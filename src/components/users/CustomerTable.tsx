@@ -69,15 +69,26 @@ export default function CustomerTable({ data, isLoading, onEditClick, onDeleteCl
       ),
     }),
 
-    columnHelper.display({
-      id: "total_transactions",
-      header: "Jumlah Transaksi",
-      cell: () => (
-        <div className="flex items-center gap-1.5 font-bold text-blue-600 bg-blue-50/50 px-2.5 py-1 rounded-md w-fit border border-blue-100 text-xs">
-          <ReceiptText size={12} />
-          <span>0</span>
-        </div>
+    columnHelper.accessor("total_transactions", {
+      header: ({ column }) => (
+        <button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider hover:text-blue-600 transition-colors">
+          Total Transaksi <ArrowUpDown size={14} />
+        </button>
       ),
+      cell: (info) => {
+        const count = info.getValue() || 0;
+        return (
+          <div className="flex items-center gap-3">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${count > 0 ? 'bg-blue-50 text-blue-600' : 'bg-gray-50 text-gray-400'}`}>
+              <ReceiptText size={14} />
+            </div>
+            <div>
+              <span className={`font-black ${count > 0 ? 'text-gray-800' : 'text-gray-400'}`}>{count}</span>
+              <span className="text-xs font-medium text-gray-500 ml-1">Pesanan</span>
+            </div>
+          </div>
+        );
+      },
     }),
 
     columnHelper.accessor("created_at", {

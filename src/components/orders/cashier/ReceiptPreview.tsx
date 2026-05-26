@@ -128,15 +128,15 @@ export default function ReceiptPreview({
             <span>{rcp.time}</span>
           </div>
           <div className="flex justify-between" style={{display:"flex",justifyContent:"space-between",width:"100%"}}>
-            <span>Meja:</span> 
-            <span className="font-bold" style={{fontWeight:"bold"}}>{tableId ? tableId : "BUNGKUS"}</span>
+            <span>
+              {tableId === 'Bungkus' ? 'Layanan:' : (tableId === 'Kurir Sendiri' || tableId === 'Ambil Sendiri') ? 'Pengambilan:' : 'No Meja:'}
+            </span> 
+            <span className="font-bold" style={{fontWeight:"bold"}}>{tableId}</span>
           </div>
-          {customerName && (
-            <div className="flex justify-between" style={{display:"flex",justifyContent:"space-between",width:"100%"}}>
-              <span>Pelanggan:</span> 
-              <span className="font-bold uppercase" style={{fontWeight:"bold",textTransform:"uppercase"}}>{customerName}</span>
-            </div>
-          )}
+          <div className="flex justify-between" style={{display:"flex",justifyContent:"space-between",width:"100%"}}>
+            <span>Pelanggan:</span> 
+            <span className="font-bold uppercase" style={{fontWeight:"bold",textTransform:"uppercase"}}>{customerName || 'GUEST'}</span>
+          </div>
         </div>
 
         <div className="border-t border-b border-dashed border-gray-400 py-4 section-gap space-y-2 text-xs mt-4">
