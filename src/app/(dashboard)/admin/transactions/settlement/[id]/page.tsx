@@ -6,7 +6,6 @@ import { Printer, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useSettlement } from "@/hooks/useSettlement";
 import { formatDateFull } from "@/utils/format";
-import { Transaction } from "@/types";
 
 import DailySummaryCards from "@/components/settlements/DailySummaryCards";
 import PaymentBreakdownTable from "@/components/settlements/PaymentBreakdownTable";
@@ -18,7 +17,7 @@ import CompactExpenseTable from "@/components/settlements/CompactExpenseTable";
 export default function AdminSettlementDetailPage() {
   const { id } = useParams();
   const { settlementDetail, isLoading, fetchSettlementDetail } = useSettlement();
-  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
+  const [selectedTxId, setSelectedTxId] = useState<string>("");
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
   useEffect(() => {
@@ -82,13 +81,13 @@ export default function AdminSettlementDetailPage() {
 
       <DailyTransactionTable
         transactions={transactions || []}
-        onViewReceipt={(tx) => setSelectedTx(tx)}
+        onViewReceipt={(id) => setSelectedTxId(id)}
       />
 
       <ReportTransactionModal
-        isOpen={!!selectedTx}
-        onClose={() => setSelectedTx(null)}
-        transaction={selectedTx}
+        isOpen={!!selectedTxId}
+        onClose={() => setSelectedTxId("")}
+        transactionId={selectedTxId}
         depot={settlementDepot ?? null} 
       />
 
