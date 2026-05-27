@@ -151,7 +151,7 @@ export default function MenuManagement() {
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="font-bold text-gray-800 line-clamp-1">
+                  <h3 className="font-bold text-gray-800">
                     {menu.name}
                   </h3>
                   <div className="flex items-center justify-between mt-1">
@@ -164,7 +164,7 @@ export default function MenuManagement() {
                   </div>
                 </div>
 
-                <div className="text-xs text-gray-500 line-clamp-2 italic h-8">
+                <div className="text-xs text-gray-500 italic">
                   {menu.description || "Tidak ada deskripsi menu."}
                 </div>
 

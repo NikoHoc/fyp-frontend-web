@@ -12,7 +12,7 @@ interface MenuCardProps {
 
 export default function MenuCard({ menu, onEdit, onDelete, onClick }: MenuCardProps) {
   return (
-    <div onClick={onClick} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+    <div onClick={onClick} className="h-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
       <div className="relative h-40 w-full bg-gray-100">
         {menu.image_url ? (
           <Image 
@@ -48,9 +48,7 @@ export default function MenuCard({ menu, onEdit, onDelete, onClick }: MenuCardPr
           </div>
         </div>
         
-        {menu.description && (
-          <p className="text-sm text-gray-600 line-clamp-2 mt-1 flex-1">{menu.description}</p>
-        )}
+        <p className="text-sm text-gray-600 mt-1 flex-1">{menu.description ? menu.description : '-'}</p>
 
         {(onEdit || onDelete) && (
           <div className="mt-4 flex gap-2 justify-end pt-3 border-t border-gray-100">

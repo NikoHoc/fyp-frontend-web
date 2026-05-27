@@ -96,8 +96,8 @@ export default function MenuCategorySection({
           ) : filteredMenus.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
               {filteredMenus.map((menu) => (
-                <div key={menu.id} className="relative">
-                  <div className={!menu.is_available ? "opacity-50 pointer-events-none select-none" : undefined}>
+                <div key={menu.id} className="relative h-full">
+                  <div className={!menu.is_available ? "opacity-50 pointer-events-none select-none h-full" : "h-full"}>
                     <MenuCard
                       menu={menu}
                       onClick={() => onMenuItemClick(menu)}
