@@ -1,5 +1,5 @@
 import MenuManagement from "@/components/menus/MenuManagement";
 
-export default function KasirMenusPage() {
+export default function OwnerMenusPage() {
   return <MenuManagement />;
 }

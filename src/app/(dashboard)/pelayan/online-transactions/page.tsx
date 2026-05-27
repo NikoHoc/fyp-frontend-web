@@ -79,8 +79,8 @@ export default function PelayanOnlineTransactions() {
   };
 
   return (
-    <div className="space-y-6 pb-24 max-w-7xl mx-auto">
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-6 pb-24">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-800 tracking-tight">Dapur: Pesanan Online</h1>
           <p className="text-sm text-gray-500 mt-1 font-medium">Daftar pesanan lunas yang siap dimasak & diserahkan</p>

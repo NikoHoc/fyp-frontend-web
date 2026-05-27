@@ -25,7 +25,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <h1 className="text-2xl font-black text-gray-800 tracking-tight">
           Pusat Kendali Sistem (Pusat) 🚀
         </h1>

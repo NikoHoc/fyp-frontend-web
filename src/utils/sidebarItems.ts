@@ -40,6 +40,7 @@ export const SIDEBAR_ITEMS: Record<Role, SidebarItem[]> = {
     { title: "Transaksi Onsite", path: "/owner/onsite-transactions", icon: UtensilsCrossed },
     { title: "Transaksi Online", path: "/owner/online-transactions", icon: Smartphone },
     { title: "Manajemen Meja", path: "/owner/tables", icon: Dices },
+    { title: "Menu", path: "/owner/menus", icon: Soup},
     { title: "Settlement Harian", path: "/owner/settlement", icon: BanknoteArrowDown },
     { title: "Laporan & Analitik", path: "/owner/reports", icon: ScrollText },
     { title: "Pengeluaran Operasional", path: "/owner/expenses", icon: ShoppingCart },
@@ -49,7 +50,7 @@ export const SIDEBAR_ITEMS: Record<Role, SidebarItem[]> = {
   kasir: [
     { title: "Transaksi Onsite", path: "/kasir", icon: UtensilsCrossed },
     { title: "Transaksi Online", path: "/kasir/online-transactions", icon: Smartphone },
-    { title: "Master Menu", path: "/kasir/menus", icon: Soup},
+    { title: "Menu", path: "/kasir/menus", icon: Soup},
     { title: "Settlement Harian", path: "/kasir/settlement", icon: BanknoteArrowDown},
     { title: "Laporan Transaksi", path: "/kasir/reports", icon: ScrollText},
   ],

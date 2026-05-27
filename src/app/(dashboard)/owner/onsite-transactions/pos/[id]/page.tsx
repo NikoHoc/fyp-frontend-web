@@ -97,6 +97,38 @@ function OwnerPosPageContent() {
     }
   }, [isLoadingSession, user?.depot_id, transactionId, tableId, getDepotMenus, fetchTableById]);
 
+  useEffect(() => {
+    if (!user?.depot_id) return;
+
+    const menuStatusChannel = supabaseRealtime
+      .channel(`public:depot_menus_status:${user.depot_id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "depot_menus",
+          filter: `depot_id=eq.${user.depot_id}`,
+        },
+        (payload) => {
+          const updatedRecord = payload.new as { menu_id: number; is_available: boolean };
+          
+          setLocalMenus((prevMenus) =>
+            prevMenus.map((menu) =>
+              menu.id === updatedRecord.menu_id || (menu as Menu).id === updatedRecord.menu_id
+                ? { ...menu, is_available: updatedRecord.is_available }
+                : menu
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabaseRealtime.removeChannel(menuStatusChannel);
+    };
+  }, [user?.depot_id]);
+  
   // load transaksi jika ada
   const loadExistingTransaction = useCallback(async (silent = false) => {
     if (transactionId === "new") return;
