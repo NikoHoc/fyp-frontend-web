@@ -147,7 +147,7 @@ export default function EmployeeTable({ data, isLoading, onEditClick, onDeleteCl
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-      <div className="p-4 border-b border-gray-100 bg-white flex justify-between items-center">
+      <div className="p-4 border-b border-gray-100 bg-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-lg font-bold text-gray-800">Daftar Pegawai</h2>
         <div className="relative w-full sm:w-72">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -162,8 +162,8 @@ export default function EmployeeTable({ data, isLoading, onEditClick, onDeleteCl
           />
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-225">
+      <div className="overflow-x-auto w-full">
+        <table className="w-full text-left border-collapse min-w-200"> 
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="bg-gray-50/80 border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wider font-bold">

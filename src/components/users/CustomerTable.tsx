@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { User } from "@/types";
-import { Search, Pencil, Trash2, ArrowUpDown, User as UserIcon, Calendar, ReceiptText } from "lucide-react";
+import { Search, Pencil, Trash2, ArrowUpDown, Calendar, ReceiptText } from "lucide-react";
 import { formatDateTime } from "@/utils/format";
 import {
   createColumnHelper,
@@ -141,7 +141,7 @@ export default function CustomerTable({ data, isLoading, onEditClick, onDeleteCl
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-      <div className="p-4 border-b border-gray-100 bg-white flex justify-between items-center">
+      <div className="p-4 border-b border-gray-100 bg-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-lg font-bold text-gray-800">Daftar Pelanggan</h2>
         <div className="relative w-full sm:w-72">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -156,8 +156,8 @@ export default function CustomerTable({ data, isLoading, onEditClick, onDeleteCl
           />
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-225">
+      <div className="overflow-x-auto w-full">
+        <table className="w-full text-left border-collapse min-w-200"> 
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="bg-gray-50/80 border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wider font-bold">
@@ -171,31 +171,14 @@ export default function CustomerTable({ data, isLoading, onEditClick, onDeleteCl
           </thead>
           <tbody className="divide-y divide-gray-100 text-sm">
             {isLoading ? (
-              <tr>
-                <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-400">
-                  <div className="flex justify-center items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                    <span>Memuat data pelanggan...</span>
-                  </div>
-                </td>
-              </tr>
+              <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-gray-400">Memuat data...</td></tr>
             ) : data.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length} className="px-6 py-16 text-center">
-                  <div className="flex flex-col items-center justify-center text-gray-400">
-                    <UserIcon size={48} className="mb-4 text-gray-200" />
-                    <p className="text-base font-semibold text-gray-600">Belum ada data pelanggan</p>
-                    <p className="text-sm mt-1">Data pelanggan yang terdaftar akan muncul di sini.</p>
-                  </div>
-                </td>
-              </tr>
+              <tr><td colSpan={columns.length} className="px-6 py-16 text-center text-gray-400">Belum ada data</td></tr>
             ) : (
               table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-blue-50/30 transition-colors group">
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-6 py-4">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
+                    <td key={cell.id} className="px-6 py-4">{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
                   ))}
                 </tr>
               ))

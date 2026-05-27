@@ -28,6 +28,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
     <SessionProvider>
@@ -35,16 +36,23 @@ export default function DashboardLayout({
         <RouteErrorHandler />
       </Suspense>
       <div className="min-h-screen bg-gray-50 flex">
+        {isMobileOpen && (
+          <div 
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={() => setIsMobileOpen(false)}
+          />
+        )}
         <Sidebar 
           isCollapsed={isSidebarCollapsed} 
           setIsCollapsed={setIsSidebarCollapsed} 
+          isMobileOpen={isMobileOpen}
+          setIsMobileOpen={setIsMobileOpen}
         />
         <div 
-          className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out ${
-            isSidebarCollapsed ? "ml-20" : "ml-64"
-          }`}
-        >
-          <Navbar />
+          className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out 
+            ${isSidebarCollapsed ? "md:ml-20" : "md:ml-64" } ml-0`}
+          >
+          <Navbar onMenuClick={() => setIsMobileOpen(true)} />
           <GlobalRealtimeNotification />
           <main className="flex-1 p-4 md:p-8 overflow-x-hidden">
             {children}
