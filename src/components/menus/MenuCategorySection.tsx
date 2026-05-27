@@ -61,7 +61,22 @@ export default function MenuCategorySection({
           <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider">
             Kategori
           </h2>
-          <div className="flex flex-wrap gap-3">
+
+          {/* Mobile: dropdown */}
+          <select
+            className="lg:hidden w-full px-4 py-2.5 rounded-xl border-2 border-gray-100 bg-white font-bold text-gray-700 outline-none focus:border-blue-400 transition-colors"
+            value={activeCategoryId ?? ""}
+            onChange={(e) => setActiveCategoryId(Number(e.target.value))}
+          >
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+
+          {/* Desktop: pill buttons */}
+          <div className="hidden lg:flex flex-wrap gap-3">
             {categories.map((cat) => (
               <button
                 key={cat.id}

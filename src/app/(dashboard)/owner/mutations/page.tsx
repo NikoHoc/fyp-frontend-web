@@ -81,11 +81,10 @@ export default function OwnerMutationsPage() {
   if (isLoadingSession) return null;
 
   return (
-    <div className="space-y-8">
-      {/* HEADER BAR */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-6 pb-24 mx-auto">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-800 tracking-tight">Mutasi Logistik Stok</h1>
+          <h1 className="text-2xl font-black text-gray-800">Mutasi Logistik Stok</h1>
           <p className="text-sm text-gray-500 mt-1 font-medium">Kelola pengiriman dan penerimaan barang antar depot.</p>
         </div>
         <button
@@ -93,7 +92,7 @@ export default function OwnerMutationsPage() {
             setSelectedMutation(null);
             setIsFormOpen(true);
           }}
-          className="cursor-pointer flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+          className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
         >
           <Plus size={18} />
           <span>Request Baru</span>

@@ -57,6 +57,7 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
 
   const [currentTime, setCurrentTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState<"pesanan" | "preview">("pesanan");
 
   useEffect(() => {
     if (isOpen) {
@@ -314,51 +315,79 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
       title="Checkout Pembayaran"
       maxWidth="6xl"
     >
-      <div className="flex flex-col lg:flex-row h-[80vh] bg-gray-50 rounded-b-2xl overflow-hidden -mx-6 -mb-6">
-        <div className="w-full lg:w-[55%] flex flex-col bg-white border-r border-gray-200">
-          <OrderItemList
-            isAllFullyPaid={isAllFullyPaid}
-            selectAll={selectAll}
-            toggleSelectAll={toggleSelectAll}
-            unpaidItems={unpaidItems}
-            paidSegments={paidSegments}
-            handleRemoveFromNota={handleRemoveFromNota}
-            handleAddToNota={handleAddToNota}
-            setViewingSegmentId={setViewingSegmentId}
+      <div className="flex flex-col h-[80vh] bg-gray-50 rounded-b-2xl overflow-hidden -mx-6 -mb-6">
+
+        {/* Mobile Tab Bar */}
+        <div className="flex lg:hidden border-b border-gray-200 bg-white shrink-0">
+          <button
+            onClick={() => setActiveTab("pesanan")}
+            className={`flex-1 py-3 text-xs font-black uppercase tracking-wider transition-colors ${
+              activeTab === "pesanan"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-400"
+            }`}
+          >
+            Pesanan & Bayar
+          </button>
+          <button
+            onClick={() => setActiveTab("preview")}
+            className={`flex-1 py-3 text-xs font-black uppercase tracking-wider transition-colors ${
+              activeTab === "preview"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-400"
+            }`}
+          >
+            Preview Nota
+          </button>
+        </div>
+
+        <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
+          <div className={`${activeTab === "pesanan" ? "flex" : "hidden"} lg:flex w-full lg:w-[55%] flex-col bg-white border-r border-gray-200 flex-1 min-h-0`}>
+            <OrderItemList
+              isAllFullyPaid={isAllFullyPaid}
+              selectAll={selectAll}
+              toggleSelectAll={toggleSelectAll}
+              unpaidItems={unpaidItems}
+              paidSegments={paidSegments}
+              handleRemoveFromNota={handleRemoveFromNota}
+              handleAddToNota={handleAddToNota}
+              setViewingSegmentId={(id) => { setViewingSegmentId(id); setActiveTab("preview"); }}
+              setShowMasterReceipt={(show) => { setShowMasterReceipt(show); if (show) setActiveTab("preview"); }}
+            />
+            <PaymentActionForm
+              isAllFullyPaid={isAllFullyPaid}
+              grandTotalNota={grandTotalNota}
+              selectedMethod={selectedMethod}
+              setSelectedMethod={setSelectedMethod}
+              customerMoney={customerMoney}
+              setCustomerMoney={setCustomerMoney}
+              isMoneySufficient={isMoneySufficient}
+              change={change}
+              handleProcessPayment={handleProcessPayment}
+              itemsInNotaLength={itemsInNota.length}
+              paymentMethods={activeMethods}
+              isLoadingMethods={isLoadingMethods}
+              isSubmitting={isSubmitting}
+            />
+          </div>
+          <ReceiptPreview
+            receiptRef={receiptRef}
+            rcp={rcp}
+            tableId={tableId}
+            transactionId={transactionId}
+            customerName={customerName}
+            activeSegmentToView={activeSegmentToView}
+            showMasterReceipt={showMasterReceipt}
             setShowMasterReceipt={setShowMasterReceipt}
-          />
-          <PaymentActionForm
+            setViewingSegmentId={setViewingSegmentId}
             isAllFullyPaid={isAllFullyPaid}
-            grandTotalNota={grandTotalNota}
-            selectedMethod={selectedMethod}
-            setSelectedMethod={setSelectedMethod}
-            customerMoney={customerMoney}
-            setCustomerMoney={setCustomerMoney}
-            isMoneySufficient={isMoneySufficient}
-            change={change}
-            handleProcessPayment={handleProcessPayment}
-            itemsInNotaLength={itemsInNota.length}
-            paymentMethods={activeMethods}
-            isLoadingMethods={isLoadingMethods}
-            isSubmitting={isSubmitting}
+            hasPaidSegments={paidSegments.length > 0}
+            handlePrintReceipt={handlePrintReceipt}
+            handleFinalizeTransaction={handleFinalizeTransaction}
+            depot={depot}
+            className={`${activeTab === "preview" ? "flex-1 min-h-0" : "hidden"} lg:flex lg:flex-none lg:min-h-0`}
           />
         </div>
-        <ReceiptPreview
-          receiptRef={receiptRef}
-          rcp={rcp}
-          tableId={tableId}
-          transactionId={transactionId}
-          customerName={customerName}
-          activeSegmentToView={activeSegmentToView}
-          showMasterReceipt={showMasterReceipt}
-          setShowMasterReceipt={setShowMasterReceipt}
-          setViewingSegmentId={setViewingSegmentId}
-          isAllFullyPaid={isAllFullyPaid}
-          hasPaidSegments={paidSegments.length > 0}
-          handlePrintReceipt={handlePrintReceipt}
-          handleFinalizeTransaction={handleFinalizeTransaction}
-          depot={depot}
-        />
       </div>
     </Modal>
   );

@@ -59,6 +59,7 @@ interface ReceiptPreviewProps {
     phone_number: string;
   } | null;
   isReadOnly?: boolean;
+  className?: string;
 }
 
 export default function ReceiptPreview({
@@ -76,10 +77,11 @@ export default function ReceiptPreview({
   handlePrintReceipt,
   handleFinalizeTransaction,
   depot,
-  isReadOnly = false
+  isReadOnly = false,
+  className = ""
 }: ReceiptPreviewProps) {
   return (
-    <div className="w-full lg:w-[45%] bg-gray-100 p-6 flex flex-col items-center overflow-y-auto custom-scrollbar relative border-l border-gray-200">
+    <div className={`w-full lg:w-[45%] bg-gray-100 p-6 flex flex-col items-center overflow-y-auto custom-scrollbar relative border-l border-gray-200 ${className}`}>
       <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-6">
         {isReadOnly ? "Preview Nota Laporan" : "Preview Nota Transaksi"}
       </h3>

@@ -86,7 +86,8 @@ export default function ActiveMutationsTable({ data, isLoading, depotId, onRefre
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[700px]">
           <thead>
             <tr className="bg-gray-50/80 border-b border-gray-100 text-xs text-gray-400 uppercase">
               <th className="px-4 py-4">No</th>
@@ -146,6 +147,7 @@ export default function ActiveMutationsTable({ data, isLoading, depotId, onRefre
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       <ConfirmModal isOpen={!!targetDelete} onClose={() => setTargetDelete(null)} onConfirm={handleDelete} title="Batalkan Permintaan?" message={`Hapus permintaan ${targetDelete?.item_name}?`} type="danger" />

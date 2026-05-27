@@ -13,7 +13,7 @@ interface MenuCardProps {
 export default function MenuCard({ menu, onEdit, onDelete, onClick }: MenuCardProps) {
   return (
     <div onClick={onClick} className="h-full bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-      <div className="relative h-40 w-full bg-gray-100">
+      <div className="relative h-28 sm:h-40 w-full bg-gray-100 shrink-0">
         {menu.image_url ? (
           <Image 
             src={menu.image_url} 
@@ -28,27 +28,27 @@ export default function MenuCard({ menu, onEdit, onDelete, onClick }: MenuCardPr
           </div>
         )}
       </div>
-      <div className="p-4 flex-1 flex flex-col">
-        <div className="flex justify-between items-start mb-2 gap-2">
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-800">{menu.name}</h3>
+      <div className="p-2 sm:p-4 flex-1 flex flex-col">
+        <div className="flex justify-between items-start gap-1 mb-1 sm:mb-2">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xs sm:text-lg font-semibold text-gray-800  leading-tight">{menu.name}</h3>
             {menu.categories?.name && (
-              <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md mt-1">
+              <span className="hidden sm:inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md mt-1">
                 {menu.categories.name}
               </span>
             )}
           </div>
-          <div className="text-right">
-            <p className="font-bold text-blue-600">{formatRupiah(menu.price)}</p>
+          <div className="text-right shrink-0">
+            <p className="font-bold text-blue-600 text-xs sm:text-sm">{formatRupiah(menu.price)}</p>
             {menu.half_price ? (
-              <p className="text-xs text-gray-500 mt-1 font-medium">
-                1/2 Porsi: {formatRupiah(menu.half_price)}
+              <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 font-medium">
+                ½: {formatRupiah(menu.half_price)}
               </p>
             ) : null}
           </div>
         </div>
         
-        <p className="text-sm text-gray-600 mt-1 flex-1">{menu.description ? menu.description : '-'}</p>
+        <p className="hidden sm:block text-sm text-gray-600 mt-1 flex-1 line-clamp-2">{menu.description ? menu.description : '-'}</p>
 
         {(onEdit || onDelete) && (
           <div className="mt-4 flex gap-2 justify-end pt-3 border-t border-gray-100">

@@ -32,7 +32,7 @@ export default function PaymentActionForm({
   itemsInNotaLength,
   paymentMethods,
   isLoadingMethods,
-  isSubmitting
+  isSubmitting,
 }: PaymentActionFormProps) {
   
   if (isAllFullyPaid) return null;
@@ -69,7 +69,8 @@ export default function PaymentActionForm({
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Rp</span>
             <input 
-              type="text" 
+              type="text"
+              inputMode="numeric"
               value={customerMoney} 
               onChange={(e) => { 
                 const val = e.target.value.replace(/[^0-9]/g, ""); 

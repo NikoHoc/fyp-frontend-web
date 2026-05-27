@@ -83,8 +83,8 @@ export default function OrderCart({
   };
 
   return (
-    <aside className="w-full lg:w-96 bg-white border-l border-gray-100 flex flex-col h-full shadow-xl">
-      <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+    <aside className="w-full lg:w-96 flex flex-col h-[70vh] lg:h-full bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="p-4 border-b border-gray-100 bg-white flex items-center justify-between shrink-0">
         <h3 className="font-black text-gray-800 flex items-center gap-2">
           <ScrollText size={20} className="text-blue-600" /> DETAIL PESANAN
         </h3>

@@ -7,6 +7,7 @@ import { supabaseRealtime } from "@/config/supabaseClient";
 import { CartItem, Menu, Transaction, TransactionItem } from "@/types";
 import OnlineOrderCard from "@/components/orders/OnlineOrderCard";
 import toast from "react-hot-toast";
+import { Soup } from "lucide-react";
 import CheckoutOrderModal from "@/components/orders/waiter/CheckoutOrderModal";
 
 export default function PelayanOnlineTransactions() {
@@ -80,15 +81,19 @@ export default function PelayanOnlineTransactions() {
 
   return (
     <div className="space-y-6 pb-24">
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-800 tracking-tight">Dapur: Pesanan Online</h1>
           <p className="text-sm text-gray-500 mt-1 font-medium">Daftar pesanan lunas yang siap dimasak & diserahkan</p>
         </div>
-        <button onClick={loadOrders} className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-2xl text-sm font-black transition-all shadow-lg shadow-blue-100 shrink-0 cursor-pointer">
+        <button
+          onClick={loadOrders}
+          className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+        >
           Refresh Data
         </button>
       </div>
+
 
       <div className="space-y-4">
         <h3 className="font-black text-gray-800 flex items-center gap-2 text-sm uppercase tracking-widest">
@@ -109,7 +114,8 @@ export default function PelayanOnlineTransactions() {
           </div>
         ) : (
           <div className="bg-white border border-gray-100 rounded-2xl py-12 flex flex-col items-center justify-center text-gray-400 shadow-sm">
-             <p className="font-bold">Dapur kosong. Belum ada pesanan online yang lunas.</p>
+             <Soup size={48} className="mb-4 opacity-20" />
+             <p className="font-bold">Belum Ada Pesanan Online</p>
           </div>
         )}
       </div>

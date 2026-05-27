@@ -85,8 +85,8 @@ export default function MenuManagement() {
     <div className="h-full flex flex-col max-w-7xl mx-auto space-y-6">
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Manajemen Menu</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-black text-gray-800">Manajemen Menu</h1>
+          <p className="text-sm text-gray-500 mt-1 font-medium">
             Atur ketersediaan menu (Habis/Tersedia) secara real-time.
           </p>
         </div>
@@ -111,7 +111,23 @@ export default function MenuManagement() {
           <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider">
             Kategori
           </h2>
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          {/* Mobile: dropdown */}
+          <div className="md:hidden">
+            <select
+              value={activeCategoryId ?? ""}
+              onChange={(e) => setActiveCategoryId(Number(e.target.value))}
+              className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {localCategories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Desktop: pill buttons */}
+          <div className="hidden md:flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {localCategories.map((cat) => (
               <button
                 key={cat.id}

@@ -82,23 +82,23 @@ export default function OwnerReportsPage() {
               Semua
             </button>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="cursor-pointer px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none focus:border-blue-500"
+              className="cursor-pointer px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none focus:border-blue-500 flex-1 sm:flex-none sm:w-auto"
             />
             <span className="text-gray-400 font-bold">-</span>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="cursor-pointer px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none focus:border-blue-500"
+              className="cursor-pointer px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none focus:border-blue-500 flex-1 sm:flex-none sm:w-auto"
             />
             <button
               onClick={handleApplyFilter}
-              className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl transition-colors shadow-sm flex justify-between items-center gap-2 font-semibold"
+              className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white p-2 px-4 rounded-xl transition-colors shadow-sm flex items-center gap-1.5 text-xs font-black w-full sm:w-auto justify-center"
               title="Terapkan Filter"
             >
               <Filter size={18} />Tampilkan

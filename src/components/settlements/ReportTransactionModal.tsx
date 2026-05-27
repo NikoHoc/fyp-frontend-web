@@ -18,6 +18,7 @@ interface Props {
 export default function ReportTransactionModal({ isOpen, onClose, transactionId, depot }: Props) {
   const [transactionDetail, setTransactonDetail] = useState<Transaction | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const [activeTab, setActiveTab] = useState<"rincian" | "preview">("rincian");
   
   const receiptRef = useRef<HTMLDivElement>(null);
   const { fetchTransactionById } = useTransaction(); 
@@ -99,8 +100,32 @@ export default function ReportTransactionModal({ isOpen, onClose, transactionId,
           </div>
         </div>
 
+        {/* Mobile Tab Bar */}
+        <div className="flex lg:hidden border-b border-gray-100 bg-white shrink-0">
+          <button
+            onClick={() => setActiveTab("rincian")}
+            className={`flex-1 py-3 text-xs font-black uppercase tracking-wider transition-colors ${
+              activeTab === "rincian"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-400"
+            }`}
+          >
+            Rincian
+          </button>
+          <button
+            onClick={() => setActiveTab("preview")}
+            className={`flex-1 py-3 text-xs font-black uppercase tracking-wider transition-colors ${
+              activeTab === "preview"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-400"
+            }`}
+          >
+            Preview Struk
+          </button>
+        </div>
+
         <div className="flex flex-col lg:flex-row flex-1 overflow-hidden bg-gray-50">
-          <div className="w-full lg:w-[55%] flex flex-col bg-white border-r border-gray-200 overflow-y-auto custom-scrollbar p-6 space-y-6">
+          <div className={`${activeTab === "rincian" ? "flex" : "hidden"} lg:flex w-full lg:w-[55%] flex-col bg-white border-r border-gray-200 overflow-y-auto custom-scrollbar p-6 space-y-6`}>
             <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">Rincian Transaksi</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* KARTU 1: NAMA PELANGGAN */}
@@ -225,12 +250,11 @@ export default function ReportTransactionModal({ isOpen, onClose, transactionId,
             </div>
           </div>
           {isLoadingDetail || !rcp ? (
-            <div className="w-full lg:w-[45%] bg-gray-100 flex flex-col items-center justify-center gap-3 text-gray-400">
+            <div className={`${activeTab === "preview" ? "flex flex-1 min-h-0" : "hidden"} lg:flex lg:flex-none lg:min-h-0 w-full lg:w-[45%] bg-gray-100 flex-col items-center justify-center gap-3 text-gray-400`}>
               <Loader2 className="animate-spin" size={32} />
               <span className="text-xs font-bold uppercase">Menyiapkan Struk...</span>
             </div>
           ) : (
-            <>
             <ReceiptPreview 
               receiptRef={receiptRef}
               rcp={rcp}
@@ -251,8 +275,8 @@ export default function ReportTransactionModal({ isOpen, onClose, transactionId,
               handlePrintReceipt={handlePrint}
               depot={depot}
               isReadOnly={true}
+              className={`${activeTab === "preview" ? "flex-1 min-h-0" : "hidden"} lg:flex lg:flex-none lg:min-h-0`}
             />
-            </>
           )}
 
         </div>

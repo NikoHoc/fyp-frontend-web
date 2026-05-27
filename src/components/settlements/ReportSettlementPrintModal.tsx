@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { X, Calendar, User, Printer  } from "lucide-react";
 import { formatRupiah, formatDateTime } from "@/utils/format";
 import { DailySettlement, SettlementSummary, Expense, Depot } from "@/types";
@@ -18,6 +18,7 @@ interface Props {
 
 export default function ReportSettlementPrintModal({ isOpen, onClose, settlement, summary, expenses, depot, role = "owner" }: Props) {
   const printRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState<"rincian" | "preview">("rincian");
 
   const handlePrint = () => {
     const printContent = printRef.current?.innerHTML;
@@ -49,9 +50,33 @@ export default function ReportSettlementPrintModal({ isOpen, onClose, settlement
             </button>
           </div>
         </div>
+
+        {/* Mobile Tab Bar */}
+        <div className="flex lg:hidden border-b border-gray-100 bg-white shrink-0">
+          <button
+            onClick={() => setActiveTab("rincian")}
+            className={`flex-1 py-3 text-xs font-black uppercase tracking-wider transition-colors ${
+              activeTab === "rincian"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-400"
+            }`}
+          >
+            Rincian
+          </button>
+          <button
+            onClick={() => setActiveTab("preview")}
+            className={`flex-1 py-3 text-xs font-black uppercase tracking-wider transition-colors ${
+              activeTab === "preview"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-400"
+            }`}
+          >
+            Preview Nota
+          </button>
+        </div>
         <div className="flex flex-col lg:flex-row flex-1 overflow-hidden bg-gray-50">
 
-          <div className="w-full lg:w-[55%] flex flex-col bg-white border-r border-gray-200 overflow-y-auto custom-scrollbar p-6 space-y-6">
+          <div className={`${activeTab === "rincian" ? "flex" : "hidden"} lg:flex w-full lg:w-[55%] flex-col bg-white border-r border-gray-200 overflow-y-auto custom-scrollbar p-6 space-y-6`}>
             <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">Informasi Penutupan</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-gray-50 p-4 rounded-2xl flex items-center gap-3 border border-gray-100">
@@ -105,7 +130,7 @@ export default function ReportSettlementPrintModal({ isOpen, onClose, settlement
             )}
           </div>
 
-          <div className="w-full lg:w-[45%] bg-gray-100 p-6 flex flex-col items-center overflow-y-auto custom-scrollbar">
+          <div className={`${activeTab === "preview" ? "flex" : "hidden"} lg:flex w-full lg:w-[45%] flex-col bg-gray-100 p-6 items-center overflow-y-auto custom-scrollbar`}>
             <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 shrink-0">Preview Nota Closing</h3>
             <div ref={printRef} className="w-full max-w-[320px] bg-white shadow-xl p-6 rounded-sm mb-6 flex flex-col text-gray-900 text-xs shrink-0 select-none">
               <div className="text-center space-y-1">

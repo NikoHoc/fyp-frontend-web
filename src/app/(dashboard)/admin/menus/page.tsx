@@ -77,7 +77,55 @@ export default function AdminMenusPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:items-start lg:max-h-[calc(100vh-190px)]">
-        <div className="lg:col-span-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-5 lg:min-h-50 lg:max-h-[calc(100vh-190px)] flex flex-col">
+        <div className="lg:hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value === "all" ? "all" : Number(e.target.value))}
+              className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 outline-none focus:border-blue-500 appearance-none cursor-pointer"
+            >
+              <option value="all">Semua Kategori</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={() => { setEditingCategory(null); setIsCatModalOpen(true); }}
+              className="flex items-center gap-1 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-xl text-sm font-semibold transition-colors whitespace-nowrap shrink-0"
+            >
+              <Plus size={15} /> Kategori
+            </button>
+          </div>
+          {selectedCategory !== "all" && (
+            <div className="flex items-center gap-2 self-end">
+              <span className="text-xs text-gray-400 font-medium mr-1">
+                {categories.find(c => c.id === selectedCategory)?.name}:
+              </span>
+              <button
+                onClick={() => {
+                  const cat = categories.find(c => c.id === selectedCategory);
+                  if (cat) { setEditingCategory(cat); setIsCatModalOpen(true); }
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-600 hover:text-blue-600 hover:bg-blue-50 border border-gray-200 rounded-lg text-xs font-semibold transition-colors"
+              >
+                <Edit2 size={13} /> Edit
+              </button>
+              <button
+                onClick={() => {
+                  const cat = categories.find(c => c.id === selectedCategory);
+                  if (cat) setCatToDelete(cat);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-600 hover:text-red-600 hover:bg-red-50 border border-gray-200 rounded-lg text-xs font-semibold transition-colors"
+              >
+                <Trash2 size={13} /> Hapus
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="hidden lg:flex lg:col-span-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-5 lg:min-h-50 lg:max-h-[calc(100vh-190px)] flex-col">
           <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4 shrink-0">
             <h2 className="text-xl font-bold text-gray-800">Kategori</h2>
             <button

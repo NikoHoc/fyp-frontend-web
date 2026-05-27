@@ -59,7 +59,7 @@ export default function EmployeesPage() {
           <p className="text-sm text-gray-500 mt-1 font-medium">Kelola data kasir dan pelayan depot.</p>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="relative w-full sm:w-auto">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
               <Filter size={16} />

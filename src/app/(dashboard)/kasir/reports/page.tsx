@@ -63,8 +63,8 @@ export default function ReportsPage() {
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row items-start lg:items-end gap-4">
-          <div className="flex items-center gap-2 bg-gray-50 p-1 rounded-xl border border-gray-100">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-3 w-full xl:w-auto">
+          <div className="flex items-center gap-1.5 bg-gray-50 p-1 rounded-xl border border-gray-100 self-start lg:self-auto">
             <button
               onClick={() => handleFilterShortcut("bulan_ini")}
               className={`cursor-pointer px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${activeShortcut === "bulan_ini" ? "bg-white text-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
@@ -78,7 +78,7 @@ export default function ReportsPage() {
               Semua
             </button>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
             <input
               type="date"
               value={startDate}
@@ -94,7 +94,7 @@ export default function ReportsPage() {
             />
             <button
               onClick={handleApplyFilter}
-              className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-xl transition-colors shadow-sm flex justify-between items-center gap-2 font-semibold"
+              className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white p-2 px-4 rounded-xl transition-colors shadow-sm flex items-center gap-1.5 text-xs font-black w-full sm:w-auto justify-center"
               title="Terapkan Filter"
             >
               <Filter size={18} />Tampilkan

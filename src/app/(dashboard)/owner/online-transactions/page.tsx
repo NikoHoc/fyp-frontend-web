@@ -68,22 +68,25 @@ export default function KasirOwnerOnlineTransactions() {
 
   return (
     <div className="space-y-6 pb-24">
-      {/* HEADER LAYOUT */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-800 tracking-tight">Pesanan Online Masuk</h1>
-          <p className="text-sm text-gray-500 mt-1 font-medium">Manajemen workflow otomatisasi pesanan kurir & self-pickup</p>
+          <h1 className="text-2xl font-black text-gray-800">
+            Pesanan Online Masuk
+          </h1>
+          <p className="text-sm text-gray-500 mt-1 font-medium">Manajemen pesanan online yang masuk dari aplikasi</p>
         </div>
-        <button onClick={loadOrders} className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-2xl text-sm font-black transition-all shadow-lg shadow-blue-100 shrink-0 cursor-pointer">
+        <button
+          onClick={loadOrders}
+          className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+        >
           Refresh Data
         </button>
       </div>
 
-      {/* SECTION 1: ANTRIAN MASUK & BELUM BAYAR */}
       <div className="space-y-4 mb-10">
         <h3 className="font-black text-gray-800 flex items-center gap-2 text-sm uppercase tracking-widest">
           <div className="w-1.5 h-5 bg-amber-500 rounded-full"></div>
-          1. Antrean Konfirmasi & Pembayaran ({unfulfilledOrders.length})
+          Antrean Konfirmasi & Pembayaran ({unfulfilledOrders.length})
         </h3>
         {unfulfilledOrders.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -97,18 +100,18 @@ export default function KasirOwnerOnlineTransactions() {
         )}
       </div>
 
-      {/* SECTION 2: DAPUR AKTIF (SUDAH BAYAR & SIAP SAJI) */}
       <div className="space-y-4">
         <h3 className="font-black text-gray-800 flex items-center gap-2 text-sm uppercase tracking-widest">
           <div className="w-1.5 h-5 bg-green-500 rounded-full"></div>
-          2. Dapur Aktif & Siap Disajikan ({activeKitchenOrders.length})
+          Dapur Aktif & Siap Disajikan ({activeKitchenOrders.length})
         </h3>
         {activeKitchenOrders.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {activeKitchenOrders.map(o => <OnlineOrderCard key={o.id} transaction={o} role="owner" onAction={handleAction} onPrintNota={handlePrintNota} />)}
           </div>
-        ) : (
+        ) : (  
           <div className="bg-white border border-gray-100 rounded-2xl py-12 flex flex-col items-center justify-center text-gray-400 shadow-sm">
+             <ShoppingBag size={48} className="mb-4 opacity-20" />
              <p className="font-bold">Belum ada pesanan lunas yang masuk ke dapur.</p>
           </div>
         )}

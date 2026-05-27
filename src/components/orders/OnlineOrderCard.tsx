@@ -49,7 +49,7 @@ export default function OnlineOrderCard({
 
   return (
     <div
-      className={`bg-white rounded-3xl border shadow-sm hover:shadow-md transition-all flex flex-col overflow-hidden ${
+      className={`bg-white p-4 md:p-6 rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-md transition-shadow ${
         transaction.order_status === "pending"
           ? "border-amber-200"
           : transaction.order_status === "confirmed"
@@ -59,7 +59,6 @@ export default function OnlineOrderCard({
               : "border-green-200"
       }`}
     >
-      {/* HEADER KARTU */}
       <div className="bg-gray-50 px-5 py-3 flex justify-between items-center border-b border-gray-100">
         <span className="text-[10px] font-black text-gray-500 uppercase tracking-wider">
           #{transaction.id.split("-")[0]}
@@ -70,10 +69,9 @@ export default function OnlineOrderCard({
       </div>
 
       <div className="p-5 flex-1 flex flex-col">
-        {/* PROFIL PELANGGAN */}
         <div className="flex justify-between items-start mb-3">
           <div>
-            <h3 className="font-black text-gray-800 text-base flex items-center gap-2">
+            <h3 className="font-bold text-gray-800 text-sm md:text-base">
               <User size={16} className="text-gray-400" />{" "}
               {transaction.customer_name || "Pelanggan Online"}
             </h3>
@@ -83,8 +81,6 @@ export default function OnlineOrderCard({
             </p>
           </div>
         </div>
-
-        {/* STATUS BADGES */}
         <div className="flex flex-wrap gap-1.5 mb-4">
           <span className="flex items-center gap-1 text-[9px] font-black px-2 py-0.5 rounded-md bg-gray-100 text-gray-600 uppercase">
             {transaction.pickup_method === "self_courier" ? (
@@ -122,7 +118,6 @@ export default function OnlineOrderCard({
           </span>
         </div>
 
-        {/* DETAIL ITEM PESANAN */}
         <div className="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-100 flex-1">
           {isLoadingItems ? (
             <div className="flex justify-center py-2">
@@ -163,7 +158,6 @@ export default function OnlineOrderCard({
           )}
         </div>
 
-        {/* RINCIAN STRUK TAGIHAN */}
         <div className="mb-4 space-y-1 border-b border-gray-100 pb-3">
           <div className="flex justify-between items-center text-xs text-gray-400 font-bold">
             <span>Subtotal</span>
@@ -183,9 +177,7 @@ export default function OnlineOrderCard({
           </div>
         </div>
 
-        {/* LOGIKA TOMBOL BERDASARKAN STATUS DAN PERAN */}
         <div className="mt-auto">
-          {/* 1. Kasir Belum Konfirmasi */}
           {transaction.order_status === "pending" &&
             (role === "kasir" || role === "owner") && (
               <div className="flex gap-2">
@@ -204,7 +196,6 @@ export default function OnlineOrderCard({
               </div>
             )}
 
-          {/* 2. Sudah Diterima Tapi Belum Bayar */}
           {transaction.order_status === "confirmed" &&
             transaction.payment_status === "unpaid" && (
               <div className="w-full text-center py-2 bg-blue-50 text-blue-700 font-black text-xs rounded-xl border border-blue-100">
@@ -212,7 +203,6 @@ export default function OnlineOrderCard({
               </div>
             )}
 
-          {/* 3. Sudah Bayar & Sedang Dimasak */}
           {transaction.order_status === "cooking" &&
             transaction.payment_status === "paid" && (
               <div className="flex gap-2">

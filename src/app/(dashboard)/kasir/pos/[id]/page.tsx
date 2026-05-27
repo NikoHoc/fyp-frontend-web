@@ -305,13 +305,13 @@ function PosPageContent() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-6rem)] gap-4">
-      <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between gap-4">
+    <div className="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-6rem)] gap-4">
+      <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden min-h-[60vh] lg:min-h-0">
+        <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push("/kasir")}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors shrink-0"
             >
               <ArrowLeft size={20} className="text-gray-600" />
             </button>
@@ -322,7 +322,7 @@ function PosPageContent() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border border-gray-200 w-full md:w-auto">
+          <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border border-gray-200 w-full sm:w-auto">
             <UserRoundPlus size={18} className="text-gray-400 shrink-0" />
             <input
               type="text"
@@ -330,7 +330,7 @@ function PosPageContent() {
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               onBlur={handleCustomerNameBlur}
-              className="bg-transparent border-none outline-none text-sm font-medium text-gray-700 placeholder:text-gray-400 w-full md:w-48"
+              className="bg-transparent border-none outline-none text-sm font-medium text-gray-700 placeholder:text-gray-400 w-full sm:w-48"
             />
           </div>
         </div>

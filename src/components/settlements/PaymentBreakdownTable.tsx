@@ -21,7 +21,7 @@ export default function PaymentBreakdownTable({ summary }: Props) {
         <h2 className="text-lg font-black text-gray-800 uppercase flex items-center gap-2">
           <Coins size={20} className="text-green-500" /> Rincian Pemasukan
         </h2>
-        <div className="flex flex-wrap items-center gap-2 text-[10px] sm:text-xs">
+        <div className="flex flex-wrap items-center gap-2 text-[10px] sm:text-xs justify-end">
           <div className="flex items-center gap-1 bg-green-50 text-green-700 px-2.5 py-1.5 rounded-lg border border-green-100 font-semibold">
             <span>Tunai:</span>
             <span>{formatRupiah(cashIncome)}</span>
