@@ -81,7 +81,7 @@ export default function OwnerMutationsPage() {
   if (isLoadingSession) return null;
 
   return (
-    <div className="space-y-6 pb-24 mx-auto">
+    <div className="h-full flex flex-col mx-auto space-y-6">
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-800">Mutasi Logistik Stok</h1>

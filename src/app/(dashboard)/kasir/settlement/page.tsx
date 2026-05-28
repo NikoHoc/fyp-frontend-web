@@ -63,7 +63,7 @@ export default function CashierSettlementPage() {
   const { summary, transactions } = todayData || {};
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="h-full flex flex-col mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
         <div>
           <h1 className="text-2xl font-black text-gray-800">Rekap penjualan harian</h1>

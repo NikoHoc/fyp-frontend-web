@@ -24,7 +24,7 @@ export default function AdminDashboard() {
   const activeDepots = depots.filter(d => d.is_open).length;
 
   return (
-    <div className="space-y-4 md:space-y-6">
+    <div className="h-full flex flex-col mx-auto space-y-6">
       <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
         <h1 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight">
           Pusat Kendali Sistem (Pusat) 🚀

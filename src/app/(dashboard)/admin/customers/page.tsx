@@ -50,7 +50,7 @@ export default function CustomersPage() {
   };
 
   return (
-    <div className="space-y-6 w-full max-w-full overflow-x-hidden">
+    <div className="h-full flex flex-col mx-auto space-y-6 overflow-x-hidden">
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-800">

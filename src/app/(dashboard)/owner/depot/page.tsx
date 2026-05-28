@@ -116,7 +116,7 @@ export default function OwnerSettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col mx-auto space-y-6">
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <h1 className="text-2xl font-black text-gray-800 tracking-tight">Pengaturan Cabang</h1>
         <p className="text-sm text-gray-500 mt-1 font-medium">

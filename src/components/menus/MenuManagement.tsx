@@ -82,7 +82,7 @@ export default function MenuManagement() {
   if (isLoadingSession) return <div className="p-6">Loading data...</div>;
 
   return (
-    <div className="h-full flex flex-col max-w-7xl mx-auto space-y-6">
+    <div className="h-full flex flex-col mx-auto space-y-6">
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-800">Manajemen Menu</h1>

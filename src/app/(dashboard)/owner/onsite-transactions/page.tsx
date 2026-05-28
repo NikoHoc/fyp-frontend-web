@@ -107,7 +107,7 @@ export default function OwnerOnsiteTransactions() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col mx-auto space-y-6">
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
           <h1 className="text-2xl font-black text-gray-800">Dashboard POS - Owner</h1>

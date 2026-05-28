@@ -55,7 +55,7 @@ export default function OwnerReportsPage() {
   }
   
   return (
-    <div className="space-y-8 pb-10">
+    <div className="h-full flex flex-col mx-auto space-y-6">
       <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-6 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
         <div>
           <h1 className="text-2xl font-black text-gray-800">Laporan Depot</h1>

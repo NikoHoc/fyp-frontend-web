@@ -72,7 +72,7 @@ export default function AdminTransactionsPage() {
   const currentLoading = isDepotsLoading || isSettlementLoading;
 
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col mx-auto space-y-6">
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full xl:w-auto">
           <div>
