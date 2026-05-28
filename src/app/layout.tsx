@@ -29,6 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
+        suppressHydrationWarning
         className={`${montserrat.variable} ${poppins.variable} antialiased`}
       >
         <Toaster position="top-center" />

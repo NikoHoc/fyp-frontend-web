@@ -111,7 +111,6 @@ export default function MenuManagement() {
           <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider">
             Kategori
           </h2>
-          {/* Mobile: dropdown */}
           <div className="md:hidden">
             <select
               value={activeCategoryId ?? ""}
@@ -126,7 +125,6 @@ export default function MenuManagement() {
             </select>
           </div>
 
-          {/* Desktop: pill buttons */}
           <div className="hidden md:flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {localCategories.map((cat) => (
               <button
@@ -198,7 +196,7 @@ export default function MenuManagement() {
                     </>
                   ) : (
                     <>
-                      <XCircle size={16} /> Habis / Kosong
+                      <XCircle size={16} /> Habis
                     </>
                   )}
                 </button>

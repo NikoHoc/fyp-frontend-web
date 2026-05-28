@@ -16,7 +16,7 @@ export default function PaymentBreakdownTable({ summary }: Props) {
   ).reduce((sum, m) => sum + m.total_net_amount, 0) || 0;
 
   return (
-    <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm h-full flex flex-col">
+    <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm flex flex-col">
       <div className="p-6 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
         <h2 className="text-lg font-black text-gray-800 uppercase flex items-center gap-2">
           <Coins size={20} className="text-green-500" /> Rincian Pemasukan

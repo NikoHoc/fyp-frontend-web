@@ -8,7 +8,7 @@ interface Props {
 
 export default function CompactExpenseTable({ expenses }: Props) {
   return (
-    <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm flex flex-col h-full">
+    <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm flex flex-col">
       <div className="p-6 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
         <h2 className="text-lg font-black text-gray-800 uppercase flex items-center gap-2">
           <TrendingDown size={20} className="text-red-500" /> Daftar Pengeluaran
@@ -40,7 +40,7 @@ export default function CompactExpenseTable({ expenses }: Props) {
               ))
             ) : (
               <tr>
-                <td colSpan={2} className="px-4 py-8 text-center text-gray-400 font-medium italic">
+                <td colSpan={3} className="px-4 py-8 text-center text-gray-400 font-medium italic">
                   Tidak ada pengeluaran yang tercatat.
                 </td>
               </tr>
