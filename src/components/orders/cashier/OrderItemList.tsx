@@ -4,6 +4,7 @@ import { CheckSquare, Square, Minus, Plus, CheckCircle2, Eye } from "lucide-reac
 import { formatRupiah } from "@/utils/format";
 import { CheckoutItem } from "./CheckoutPaymentModal";
 import { PaidSegment } from "./ReceiptPreview";
+import { useMemo } from "react";
 
 interface OrderItemListProps {
   isAllFullyPaid: boolean;
@@ -28,6 +29,21 @@ export default function OrderItemList({
   setViewingSegmentId,
   setShowMasterReceipt,
 }: OrderItemListProps) {
+  
+  const groupedUnpaid = useMemo(() => {
+    const groups = unpaidItems.reduce((acc, item) => {
+      const bNum = item.batch_number || 1;
+      if (!acc[bNum]) acc[bNum] = [];
+      acc[bNum].push(item);
+      return acc;
+    }, {} as Record<number, CheckoutItem[]>);
+    
+    return {
+      groups,
+      sortedBatches: Object.keys(groups).map(Number).sort((a, b) => a - b)
+    };
+  }, [unpaidItems]);
+
   return (
     <>
       <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white shadow-sm z-10 shrink-0">
@@ -41,44 +57,65 @@ export default function OrderItemList({
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
         {!isAllFullyPaid ? (
-          <div className="space-y-3">
+          <div className="space-y-4">
             <h4 className="text-xs font-bold text-red-500 uppercase tracking-wider mb-2">Belum Dibayar</h4>
-            {unpaidItems.map((item) => {
-              const qtyAvailable = item.qtyTotal - item.qtyPaid - item.qtyInNota;
-              return (
-                <div key={item.id} className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl hover:border-blue-300 transition-colors">
-                  <div className="flex-1 min-w-0 pr-4">
-                    <h4 className="font-bold text-gray-800 text-sm truncate">
-                      {item.name}
-                      {item.is_half_portion && (
-                        <span className="ml-2 text-[9px] bg-red-100 text-red-500 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
-                          1/2 Porsi
-                        </span>
-                      )}
-                    </h4>
-                    <p className="text-blue-600 font-semibold text-sm">{formatRupiah(item.price)}</p>
-                    {/* CATATAN (NOTE) */}
-                    {item.note && (
-                      <p className="text-[10px] text-orange-500 italic mt-0.5 truncate">
-                        # {item.note}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <span className="text-[10px] text-gray-500 mb-1">Sisa: {qtyAvailable}</span>
-                    <div className={`flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg p-1 ${selectAll ? "opacity-50" : ""}`}>
-                      <button onClick={() => handleRemoveFromNota(item.id)} disabled={item.qtyInNota === 0 || selectAll} className="w-7 h-7 flex items-center justify-center rounded bg-white shadow-sm text-gray-600 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed">
-                        <Minus size={14} />
-                      </button>
-                      <span className="w-6 text-center text-sm font-bold text-blue-600">{item.qtyInNota}</span>
-                      <button onClick={() => handleAddToNota(item.id)} disabled={qtyAvailable === 0 || selectAll} className="w-7 h-7 flex items-center justify-center rounded bg-white shadow-sm text-gray-600 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed">
-                        <Plus size={14} />
-                      </button>
-                    </div>
-                  </div>
+            
+            {groupedUnpaid.sortedBatches.map((batchNum) => (
+              <div key={batchNum} className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                {/* Header Card per Batch */}
+                <div className="bg-gray-50 px-4 py-2.5 border-b border-gray-200">
+                  <h4 className="text-xs font-black text-gray-600 uppercase tracking-widest">
+                    Batch {batchNum}
+                  </h4>
                 </div>
-              );
-            })}
+                
+                <div className="divide-y divide-gray-100">
+                  {groupedUnpaid.groups[batchNum].map((item) => {
+                    const qtyAvailable = item.qtyTotal - item.qtyPaid - item.qtyInNota;
+                    return (
+                      <div key={item.id} className="p-3 hover:bg-blue-50/30 transition-colors">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-bold text-gray-800 text-sm truncate">{item.name}</h4>
+                            <p className="text-blue-600 font-semibold text-sm">{formatRupiah(item.price)}</p>
+                            
+                            {/* Layout Sejajar: 1/2 Porsi dan Catatan */}
+                            {(item.is_half_portion || item.note) && (
+                              <div className="flex items-center gap-2 mt-1.5 overflow-hidden">
+                                {item.is_half_portion && (
+                                  <span className="text-[9px] bg-red-100 text-red-500 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0">
+                                    1/2 Porsi
+                                  </span>
+                                )}
+                                {item.note && (
+                                  <p className="text-[10px] text-orange-500 italic truncate">
+                                    # {item.note}
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="flex flex-col items-end shrink-0">
+                            <span className="text-[10px] text-gray-500 mb-1.5 font-medium">Sisa: {qtyAvailable}</span>
+                            {/* Layout Sejajar: Min, Qty, Plus */}
+                            <div className={`flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg p-1 ${selectAll ? "opacity-50" : ""}`}>
+                              <button onClick={() => handleRemoveFromNota(item.id)} disabled={item.qtyInNota === 0 || selectAll} className="w-7 h-7 flex items-center justify-center rounded bg-white shadow-sm text-gray-600 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed">
+                                <Minus size={14} />
+                              </button>
+                              <span className="w-6 text-center text-sm font-bold text-blue-600">{item.qtyInNota}</span>
+                              <button onClick={() => handleAddToNota(item.id)} disabled={qtyAvailable === 0 || selectAll} className="w-7 h-7 flex items-center justify-center rounded bg-white shadow-sm text-gray-600 hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed">
+                                <Plus size={14} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="py-6 flex flex-col items-center justify-center text-green-500 bg-green-50 rounded-xl border border-green-100">
@@ -86,6 +123,7 @@ export default function OrderItemList({
             <p className="font-bold">Semua Item Sudah Dibayar!</p>
           </div>
         )}
+        
         {paidSegments.length > 0 && (
           <div className="space-y-3 pt-4 border-t border-gray-100">
             <h4 className="text-xs font-bold text-green-500 uppercase tracking-wider mb-2 flex items-center gap-1">

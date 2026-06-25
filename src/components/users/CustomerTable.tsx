@@ -30,17 +30,18 @@ export default function CustomerTable({ data, isLoading, onEditClick, onDeleteCl
     columnHelper.display({
       id: "no",
       header: "No",
-      cell: (info) => (
-        <span className="font-medium text-gray-500">{info.row.index + 1}</span>
-      ),
+      cell: (info) => {
+        const rowIndex = info.table.getSortedRowModel().flatRows.findIndex(
+          (row) => row.id === info.row.id
+        );
+        return (
+          <span className="font-medium text-gray-500">{rowIndex + 1}</span>
+        );
+      },
     }),
 
     columnHelper.accessor("email", {
-      header: ({ column }) => (
-        <button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} className="flex items-center gap-2 hover:text-gray-700 whitespace-nowrap">
-          Email <ArrowUpDown size={14} />
-        </button>
-      ),
+      header: "Email",
       cell: (info) => (
         <span className="text-gray-600">{info.getValue() || "-"}</span>
       ),
@@ -54,11 +55,7 @@ export default function CustomerTable({ data, isLoading, onEditClick, onDeleteCl
     }),
 
     columnHelper.accessor("full_name", {
-      header: ({ column }) => (
-        <button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} className="flex items-center gap-2 hover:text-gray-700">
-          Pelanggan <ArrowUpDown size={14} />
-        </button>
-      ),
+      header: "Pelanggan",
       cell: (info) => (
         <div className="flex flex-col">
           <span className="font-bold text-gray-900 whitespace-nowrap">{info.getValue() || "Tanpa Nama"}</span>
@@ -92,7 +89,11 @@ export default function CustomerTable({ data, isLoading, onEditClick, onDeleteCl
     }),
 
     columnHelper.accessor("created_at", {
-      header: "Tanggal Bergabung",
+      header: ({ column }) => (
+        <button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} className="flex items-center gap-2 hover:text-gray-700 whitespace-nowrap">
+          Tanggal Bergabung <ArrowUpDown size={14} />
+        </button>
+      ),
       cell: (info) => {
         const dateStr = info.getValue();
         return (

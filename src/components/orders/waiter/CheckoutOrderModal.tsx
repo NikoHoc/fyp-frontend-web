@@ -4,6 +4,7 @@ import { useState, useMemo, useRef } from "react";
 import { Printer, ClipboardList, Filter } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import { CartItem } from "@/types";
+import { printCheckerHTML } from "@/utils/printHandler";
 
 interface CheckoutOrderModalProps {
   isOpen: boolean;
@@ -46,34 +47,44 @@ export default function CheckoutOrderModal({
     };
   }, [cartItems]);
 
-  // Filter Data Gabungan
-  const previewItems = useMemo(() => {
-    let items: CartItem[] = [];
+  const batchFilteredItems = useMemo(() => {
     if (selectedBatch === "all") {
-      items = cartItems.filter((item) => item.is_saved);
-    } else {
-      items = savedBatches[selectedBatch] || [];
+      return cartItems.filter((item) => item.is_saved);
     }
+    return savedBatches[selectedBatch] || [];
+  }, [cartItems, selectedBatch, savedBatches]);
 
+  const previewItems = useMemo(() => {
     if (filterType === "food") {
-      return items.filter((i) => i.menu.categories?.type === "food");
+      return batchFilteredItems.filter((i) => i.menu.categories?.type === "food");
     }
     if (filterType === "drink") {
-      return items.filter((i) => i.menu.categories?.type === "drink");
+      return batchFilteredItems.filter((i) => i.menu.categories?.type === "drink");
     }
-    return items;
-  }, [cartItems, selectedBatch, savedBatches, filterType]);
+    return batchFilteredItems;
+  }, [batchFilteredItems, filterType]);
 
-  // Mengelompokkan item preview berdasarkan Batch untuk tampilan UI di kiri
   const groupedPreviewItems = useMemo(() => {
     const groups: Record<number, CartItem[]> = {};
-    previewItems.forEach((item) => {
+    batchFilteredItems.forEach((item) => {
       const b = Number(item.batch_number) || 1;
       if (!groups[b]) groups[b] = [];
       groups[b].push(item);
     });
     return groups;
-  }, [previewItems]);
+  }, [batchFilteredItems]);
+
+  const previewTime = useMemo(() => {
+    const reference =
+      selectedBatch === "all"
+        ? batchFilteredItems[0]
+        : (savedBatches[selectedBatch] || [])[0];
+
+    if (reference?.created_at) {
+      return new Date(reference.created_at).toLocaleString("id-ID");
+    }
+    return new Date().toLocaleString("id-ID");
+  }, [batchFilteredItems, savedBatches, selectedBatch]);
 
   const getReceiptTitle = () => {
     if (filterType === "food") return "MAKANAN";
@@ -85,51 +96,7 @@ export default function CheckoutOrderModal({
     const content = printRef.current?.innerHTML;
     if (!content) return;
 
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow?.document;
-    if (!doc) return;
-
-    doc.write(`
-      <html>
-        <head>
-          <style>
-            @page { margin: 0; size: 80mm auto; }
-            body { 
-              font-family: 'Courier New', Courier, monospace; 
-              width: 70mm; margin: 0 auto; 
-              padding: 15px; /* PADDING AGAR TIDAK NEMPEL PINGGIR */
-              font-size: 13px;
-              color: #000;
-            }
-            .text-center { text-align: center; }
-            .font-bold { font-weight: bold; }
-            .text-xl { font-size: 22px; }
-            .text-sm { font-size: 16px; }
-            .text-\\[10px\\] { font-size: 10px; }
-            .uppercase { text-transform: uppercase; }
-            .tracking-widest { letter-spacing: 0.1em; }
-            .border-b { border-bottom: 1px dashed #000; padding-bottom: 12px; margin-bottom: 12px; }
-            .flex { display: flex; }
-            .items-start { align-items: flex-start; }
-            .w-6 { width: 28px; display: inline-block; }
-            .pl-8 { padding-left: 28px; }
-            .mt-1 { margin-top: 4px; }
-            .space-y-4 > * + * { margin-top: 16px; } /* JARAK ANTAR ITEM AGAR LEGA */
-          </style>
-        </head>
-        <body>${content}</body>
-      </html>
-    `);
-    doc.close();
-    
-    setTimeout(() => {
-      iframe.contentWindow?.focus();
-      iframe.contentWindow?.print();
-      document.body.removeChild(iframe);
-    }, 500);
+    printCheckerHTML(content, `Checker - ${getReceiptTitle()}`);
   };
 
   return (
@@ -240,6 +207,9 @@ export default function CheckoutOrderModal({
             >
               <div className="text-center border-b border-gray-300 pb-4 mb-4">
                 <h2 className="font-bold text-xl border-b border-gray-300 uppercase tracking-widest">{getReceiptTitle()}</h2>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                  {selectedBatch === "all" ? "SEMUA BATCH" : `BATCH ${selectedBatch}`}
+                </p>
                 <h3 className="font-bold text-sm mt-1 uppercase">
                   {orderType === 'online' ? 'PESANAN ONLINE: ' : orderType === 'takeaway' ? 'PESANAN: ' : 'PESANAN MEJA: '}
                   {orderType === 'online' ? ` ${tableId}` : orderType === 'takeaway' ? ' BUNGKUS' : tableId}
@@ -249,7 +219,7 @@ export default function CheckoutOrderModal({
                     A/N: {customerName}
                   </p>
                 )}
-                <p className="text-[10px] text-gray-500 mt-1">{new Date().toLocaleString("id-ID")}</p>
+                <p className="text-[10px] text-gray-500 mt-1">{previewTime}</p>
               </div>
               
               <div className="space-y-4">

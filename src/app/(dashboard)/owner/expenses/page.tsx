@@ -57,7 +57,10 @@ export default function OwnerExpensesPage() {
       try {
         await deleteExpense(expenseToDelete.id);
         setExpenseToDelete(null);
-        if (user?.depot_id) fetchExpenses(user.depot_id);
+        if (user?.depot_id) {
+          const adjustedEndDate = endDate ? `${endDate}T23:59:59.999Z` : "";
+          fetchExpenses(user.depot_id, startDate, adjustedEndDate);
+        }
       } catch {
       }
     }
@@ -141,7 +144,10 @@ export default function OwnerExpensesPage() {
         depotId={user?.depot_id || 0}
         initialData={selectedExpense}
         onSuccess={() => {
-          if (user?.depot_id) fetchExpenses(user.depot_id);
+          if (user?.depot_id) {
+            const adjustedEndDate = endDate ? `${endDate}T23:59:59.999Z` : "";
+            fetchExpenses(user.depot_id, startDate, adjustedEndDate);
+          }
         }}
       />
 

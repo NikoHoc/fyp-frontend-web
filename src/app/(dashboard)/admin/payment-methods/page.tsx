@@ -110,7 +110,7 @@ export default function PaymentMethodsAdminPage() {
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex justify-end gap-2">
-                        <button onClick={() => updateMethod(method.id, { is_active: !method.is_active })} className="p-2 text-gray-400 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors" title="Toggle Status">
+                        <button onClick={() => updateMethod(method.id, { is_active: !method.is_active })} className={`p-2 rounded-lg transition-colors ${method.is_active ? 'text-green-600 bg-green-50 hover:bg-green-100' : 'text-red-600 bg-red-50 hover:bg-red-100'}`} title="Toggle Status">
                           <Power size={16} />
                         </button>
                         <button onClick={() => openModal(method)} className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors">

@@ -127,6 +127,7 @@ export interface Transaction {
   midtrans_url?: string;
   rejection_reason?: string;
   created_at: string;
+  confirmed_at?: string;
   is_settled?: boolean;
   transaction_items?: TransactionItem[];
   transaction_payments?: TransactionPayment[];

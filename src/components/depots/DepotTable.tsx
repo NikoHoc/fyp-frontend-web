@@ -113,7 +113,7 @@ export default function DepotTable({ data, isLoading, onOperasionalClick, onDele
             <button 
               title={isOpen ? "Tutup Depot" : "Buka Depot"} 
               className={`p-2 rounded-lg transition-colors border border-transparent ${
-                isOpen ? "text-gray-400 hover:bg-gray-100" : "text-blue-600 hover:bg-blue-100"
+                isOpen ? "text-green-700 bg-green-100 hover:bg-green-200" : "text-red-700 bg-red-100 hover:bg-red-200"
               }`}
               onClick={() => onOperasionalClick(depot)} 
             >

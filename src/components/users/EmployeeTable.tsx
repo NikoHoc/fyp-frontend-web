@@ -21,7 +21,7 @@ interface EmployeeTableProps {
 }
 
 export default function EmployeeTable({ data, isLoading, onEditClick, onDeleteClick }: EmployeeTableProps) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([{ id: "role", desc: false }]);
   const [globalFilter, setGlobalFilter] = useState("");
   const columnHelper = createColumnHelper<User>();
 
@@ -44,17 +44,18 @@ export default function EmployeeTable({ data, isLoading, onEditClick, onDeleteCl
     columnHelper.display({
       id: "no",
       header: "No",
-      cell: (info) => (
-        <span className="font-medium text-gray-500">{info.row.index + 1}</span>
-      ),
+      cell: (info) => {
+        const rowIndex = info.table.getSortedRowModel().flatRows.findIndex(
+          (row) => row.id === info.row.id
+        );
+        return (
+          <span className="font-medium text-gray-500">{rowIndex + 1}</span>
+        );
+      },
     }),
 
     columnHelper.accessor("email", {
-      header: ({ column }) => (
-        <button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} className="flex items-center gap-2 hover:text-gray-700 whitespace-nowrap">
-          Email <ArrowUpDown size={14} />
-        </button>
-      ),
+      header: "Email",
       cell: (info) => (
         <span className="text-gray-600">{info.getValue() || "-"}</span>
       ),
@@ -68,11 +69,7 @@ export default function EmployeeTable({ data, isLoading, onEditClick, onDeleteCl
     }),
 
     columnHelper.accessor("full_name", {
-      header: ({ column }) => (
-        <button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} className="flex items-center gap-2 hover:text-gray-700">
-          Pegawai <ArrowUpDown size={14} />
-        </button>
-      ),
+      header: "Pegawai",
       cell: (info) => (
         <div className="flex flex-col">
           <span className="font-bold text-gray-900 whitespace-nowrap">{info.getValue()}</span>
@@ -84,7 +81,25 @@ export default function EmployeeTable({ data, isLoading, onEditClick, onDeleteCl
     }),
 
     columnHelper.accessor("role", {
-      header: "Peran",
+      header: ({ column }) => (
+        <button onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} className="flex items-center gap-2 hover:text-gray-700 whitespace-nowrap">
+          Peran <ArrowUpDown size={14} />
+        </button>
+      ),
+      sortingFn: (rowA, rowB, columnId) => {
+        const roleOrder: Record<string, number> = {
+          admin: 1,
+          owner: 2,
+          kasir: 3,
+          pelayan: 4,
+        };
+        const roleA = rowA.getValue(columnId) as string;
+        const roleB = rowB.getValue(columnId) as string;
+        const rankA = roleOrder[roleA?.toLowerCase()] || 99;
+        const rankB = roleOrder[roleB?.toLowerCase()] || 99;
+        
+        return rankA < rankB ? -1 : rankA > rankB ? 1 : 0;
+      },
       cell: (info) => (
         <div>
           {getRoleBadge(info.getValue())}

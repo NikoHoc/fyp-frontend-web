@@ -163,7 +163,7 @@ export default function OrderCart({
                     <div key={item.id} className="p-3 flex justify-between items-start">
                       <div className="space-y-0.5">
                         <h5 className="font-bold text-gray-800 text-sm leading-tight">
-                          {item.quantity}x {item.menu.name}
+                          {item.quantity} {item.menu.name}
                           {item.is_half_portion && <span className="ml-1 text-[9px] text-red-600 font-bold uppercase">[1/2]</span>}
                         </h5>
                         {variant === "kasir" && (

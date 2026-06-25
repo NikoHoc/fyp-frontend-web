@@ -21,6 +21,11 @@ export const printReceiptHTML = (printContent: string, title: string = "Cetak No
             padding: 10px 0;
             color: #000;
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
           }
           
           p, h2, h4 { margin: 0; }
@@ -59,11 +64,10 @@ export const printReceiptHTML = (printContent: string, title: string = "Cetak No
             padding-left: 20px;
             font-style: italic;
             font-size: 10px;
-            opacity: 0.9;
           }
 
           .font-bold { font-weight: bold; }
-          .font-black { font-weight: 900; }
+          .font-black { font-weight: bold; letter-spacing: 0.2px; }
           .uppercase { text-transform: uppercase; }
           .italic { font-style: italic; }
           .text-\\[10px\\] { font-size: 10px; }
@@ -143,7 +147,7 @@ export const printReceiptHTML = (printContent: string, title: string = "Cetak No
   }, 500);
 };
 
-export const printCustomerOrder = (printContent: string, title: string = "Cetak Nota") => {
+export const printCheckerHTML = (printContent: string, title: string = "Cetak Checker") => {
   if (!printContent) return;
 
   const iframe = document.createElement("iframe");
@@ -155,36 +159,41 @@ export const printCustomerOrder = (printContent: string, title: string = "Cetak 
 
   iframeDoc.write(`
     <html>
-        <head>
+      <head>
         <title>${title}</title>
-          <style>
-            @page { margin: 0; size: 80mm auto; }
-            body { 
-              font-family: 'Courier New', Courier, monospace; 
-              width: 70mm; margin: 0 auto; 
-              padding: 15px; /* PADDING AGAR TIDAK NEMPEL PINGGIR */
-              font-size: 13px;
-              color: #000;
-            }
-            .text-center { text-align: center; }
-            .font-bold { font-weight: bold; }
-            .text-xl { font-size: 22px; }
-            .text-sm { font-size: 16px; }
-            .text-\\[10px\\] { font-size: 10px; }
-            .uppercase { text-transform: uppercase; }
-            .tracking-widest { letter-spacing: 0.1em; }
-            .border-b { border-bottom: 1px dashed #000; padding-bottom: 12px; margin-bottom: 12px; }
-            .flex { display: flex; }
-            .items-start { align-items: flex-start; }
-            .w-6 { width: 28px; display: inline-block; }
-            .pl-8 { padding-left: 28px; }
-            .mt-1 { margin-top: 4px; }
-            .space-y-4 > * + * { margin-top: 16px; } /* JARAK ANTAR ITEM AGAR LEGA */
-          </style>
-        </head>
-        <body>${printContent}</body>
-      </html>
-    `);
+        <style>
+          @page { margin: 0; size: 80mm auto; }
+          body { 
+            font-family: 'Courier New', Courier, monospace; 
+            width: 70mm; margin: 0 auto; 
+            padding: 15px; /* PADDING AGAR TIDAK NEMPEL PINGGIR */
+            font-size: 13px;
+            color: #000;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          .text-center { text-align: center; }
+          .font-bold { font-weight: bold; }
+          .text-xl { font-size: 22px; }
+          .text-sm { font-size: 16px; }
+          .text-\\[10px\\] { font-size: 10px; }
+          .uppercase { text-transform: uppercase; }
+          .tracking-widest { letter-spacing: 0.1em; }
+          .border-b { border-bottom: 1px dashed #000; padding-bottom: 12px; margin-bottom: 12px; }
+          .flex { display: flex; }
+          .items-start { align-items: flex-start; }
+          .w-6 { width: 28px; display: inline-block; }
+          .pl-8 { padding-left: 28px; }
+          .mt-1 { margin-top: 4px; }
+          .space-y-4 > * + * { margin-top: 16px; } /* JARAK ANTAR ITEM AGAR LEGA */
+        </style>
+      </head>
+      <body>${printContent}</body>
+    </html>
+  `);
 
   iframeDoc.close();
   iframe.contentWindow?.focus();
@@ -218,6 +227,11 @@ export const printSettlementHTML = (printContent: string, title: string = "Closi
             padding: 4mm;
             color: #000;
             line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
           }
           
           /* Reset margins */
@@ -236,7 +250,7 @@ export const printSettlementHTML = (printContent: string, title: string = "Closi
           .text-center { text-align: center; }
           .text-right { text-align: right; }
           .font-bold { font-weight: bold; }
-          .font-black { font-weight: 900; }
+          .font-black { font-weight: bold; letter-spacing: 0.2px; }
           .uppercase { text-transform: uppercase; }
           .italic { font-style: italic; }
           .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

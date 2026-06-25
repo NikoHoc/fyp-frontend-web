@@ -5,7 +5,7 @@ import Modal from "@/components/ui/Modal";
 import toast from "react-hot-toast";
 import OrderItemList from "./OrderItemList";
 import PaymentActionForm from "./PaymentActionForm";
-import ReceiptPreview, { PaidSegment } from "./ReceiptPreview";
+import ReceiptPreview, { PaidSegment, ReceiptItem } from "./ReceiptPreview";
 import { usePaymentMethods } from "@/hooks/usePaymentMethods";
 import { TransactionPayment, CartItem, Depot } from "@/types";
 import { useRouter } from "next/navigation";
@@ -22,6 +22,7 @@ export interface CheckoutItem {
   qtyInNota: number;
   is_half_portion?: boolean;
   note?: string;
+  batch_number?: number;
 }
 interface CheckoutPaymentModalProps {
   isOpen: boolean;
@@ -76,16 +77,19 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
 
   useEffect(() => {
     if (isOpen) {
-      const mappedItems = cartItems.map((item) => ({
-        id: item.id ? item.id.toString() : item.unique_id,
-        name: item.menu.name,
-        price: item.price_at_time,
-        qtyTotal: item.quantity,
-        qtyPaid: item.quantity_paid || 0,
-        qtyInNota: 0,
-        is_half_portion: item.is_half_portion,
-        note: item.note,
-      }));
+      const mappedItems = cartItems
+        .filter((item) => item.is_saved)
+        .map((item) => ({
+          id: item.id ? item.id.toString() : item.unique_id,
+          name: item.menu.name,
+          price: item.price_at_time,
+          qtyTotal: item.quantity,
+          qtyPaid: item.quantity_paid || 0,
+          qtyInNota: 0,
+          is_half_portion: item.is_half_portion,
+          note: item.note,
+          batch_number: Number(item.batch_number) || 1,
+        }));
       setItems(mappedItems);
 
       const mappedSegments: PaidSegment[] = (existingPayments || []).map((payment, index) => {
@@ -102,7 +106,7 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
         }) || [];
 
         const segmentSubtotal = segItems.reduce((sum, item) => sum + item.price * item.qty, 0);
-        const segmentTax = segmentSubtotal * 0.1;
+        const segmentTax = Math.round(segmentSubtotal * 0.1);
         const segmentGrandTotal = payment.paid_amount - payment.change_amount;
 
         return {
@@ -134,7 +138,7 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
   // --- KALKULASI NOTA AKTIF ---
   const itemsInNota = items.filter((item) => item.qtyInNota > 0);
   const subtotalNota = itemsInNota.reduce((sum, item) => sum + item.price * item.qtyInNota, 0);
-  const taxNota = subtotalNota * 0.1;
+  const taxNota = Math.round(subtotalNota * 0.1);
   const grandTotalNota = subtotalNota + taxNota;
 
   const moneyValue = parseInt(customerMoney.replace(/[^0-9]/g, "")) || 0;
@@ -146,7 +150,7 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
   // --- KALKULASI MASTER RECEIPT ---
   const masterItems = items.filter((item) => item.qtyPaid > 0);
   const masterSubtotal = masterItems.reduce((sum, item) => sum + item.price * item.qtyPaid, 0);
-  const masterTax = masterSubtotal * 0.1;
+  const masterTax = Math.round(masterSubtotal * 0.1);
   const masterGrandTotal = masterSubtotal + masterTax;
   const masterMethods = Array.from(new Set(
     existingPayments.map(p => p.payment_methods?.name).filter(Boolean)
@@ -156,6 +160,11 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
   const masterTime = paidSegments.length > 0 ? paidSegments[paidSegments.length - 1].time : currentTime;
 
   const handleAddToNota = (id: string) => {
+    if (activeSegmentToView !== null || showMasterReceipt) {
+      setViewingSegmentId(null);
+      setShowMasterReceipt(false);
+    }
+
     if (selectAll) return;
     setItems((prev) =>
       prev.map((item) => {
@@ -170,6 +179,11 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
   };
 
   const handleRemoveFromNota = (id: string) => {
+    if (activeSegmentToView !== null || showMasterReceipt) {
+      setViewingSegmentId(null);
+      setShowMasterReceipt(false);
+    }
+
     if (selectAll) return;
     setItems((prev) =>
       prev.map((item) => {
@@ -181,6 +195,11 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
   };
 
   const toggleSelectAll = () => {
+    if (activeSegmentToView !== null || showMasterReceipt) {
+      setViewingSegmentId(null);
+      setShowMasterReceipt(false);
+    }
+
     const newSelectAll = !selectAll;
     setSelectAll(newSelectAll);
     setItems((prev) =>
@@ -256,10 +275,26 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
   const unpaidItems = items.filter((item) => item.qtyTotal > item.qtyPaid);
   const activeSegmentToView = viewingSegmentId ? (paidSegments.find((s) => s.id === viewingSegmentId) || null) : null;
 
+  const aggregateItems = (itemsToAggregate: ReceiptItem[]): ReceiptItem[] => {
+    const grouped: Record<string, ReceiptItem> = {};
+    
+    itemsToAggregate.forEach(item => {
+      const uniqueKey = `${item.name}_${item.is_half_portion}_${item.note || ''}`;
+      
+      if (!grouped[uniqueKey]) {
+        grouped[uniqueKey] = { ...item }; 
+      } else {
+        grouped[uniqueKey].qty += item.qty; 
+      }
+    });
+
+    return Object.values(grouped);
+  };
+
   const getReceiptData = () => {
     if (showMasterReceipt) {
       return {
-        items: masterItems.map((i) => ({ ...i, qty: i.qtyPaid })),
+        items: aggregateItems(masterItems.map((i) => ({ ...i, qty: i.qtyPaid }))),
         totalItems: masterItems.reduce((sum, i) => sum + i.qtyPaid, 0),
         subtotal: masterSubtotal,
         tax: masterTax,
@@ -273,7 +308,7 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
     }
     if (activeSegmentToView) {
       return {
-        items: activeSegmentToView.items,
+        items: aggregateItems(activeSegmentToView.items),
         totalItems: activeSegmentToView.items.reduce((sum, i) => sum + i.qty, 0),
         subtotal: activeSegmentToView.subtotal,
         tax: activeSegmentToView.tax,
@@ -286,7 +321,7 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
       };
     }
     return {
-      items: itemsInNota.map((i) => ({ ...i, qty: i.qtyInNota })),
+      items: aggregateItems(itemsInNota.map((i) => ({ ...i, qty: i.qtyInNota }))),
       totalItems: itemsInNota.reduce((sum, i) => sum + i.qtyInNota, 0),
       subtotal: subtotalNota,
       tax: taxNota,
@@ -351,7 +386,13 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
               paidSegments={paidSegments}
               handleRemoveFromNota={handleRemoveFromNota}
               handleAddToNota={handleAddToNota}
-              setViewingSegmentId={(id) => { setViewingSegmentId(id); setActiveTab("preview"); }}
+              setViewingSegmentId={(id) => { 
+                setViewingSegmentId(id); 
+                setActiveTab("preview"); 
+                // setItems((prev) => prev.map((item) => ({ ...item, qtyInNota: 0 })));
+                // setSelectAll(false);
+                // setCustomerMoney("");
+              }}
               setShowMasterReceipt={(show) => { setShowMasterReceipt(show); if (show) setActiveTab("preview"); }}
             />
             <PaymentActionForm

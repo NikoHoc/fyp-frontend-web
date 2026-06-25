@@ -5,12 +5,13 @@ import { Printer, CheckCircle2, ArrowLeftCircle, Receipt } from "lucide-react";
 import { formatRupiah } from "@/utils/format";
 
 export interface ReceiptItem {
-  id: string;
+  id?: string;
   name: string;
   price: number;
   qty: number;
   is_half_portion?: boolean;
   note?: string;
+  [key: string]: unknown; 
 }
 
 export interface PaidSegment {
