@@ -19,6 +19,7 @@ export default function PelayanOnlineTransactions() {
   const [checkerCartItems, setCheckerCartItems] = useState<CartItem[]>([]);
   const [selectedCheckerId, setSelectedCheckerId] = useState("");
   const [selectedCustomerName, setSelectedCustomerName] = useState("");
+  const [selectedTransactionId, setSelectedTransactionId] = useState("");
 
   const loadOrders = async () => {
     if (!user?.depot_id) return;
@@ -65,6 +66,7 @@ export default function PelayanOnlineTransactions() {
       price_at_time: item.price_at_time,
       created_at: item.created_at,
       serve_status: item.serve_status || 'cooking',
+      is_printed: item.is_printed || false,
       menu: {
         ...item.menus,
         id: item.menu_id,
@@ -74,6 +76,7 @@ export default function PelayanOnlineTransactions() {
     })) || [];
 
     setCheckerCartItems(mappedItems);
+    setSelectedTransactionId(tx.id);
     setSelectedCheckerId(`${tx.id.split('-')[0].toUpperCase()}`);
     setSelectedCustomerName(tx.customer_name || "Pelanggan Online");
     setIsCheckerModalOpen(true);
@@ -126,6 +129,7 @@ export default function PelayanOnlineTransactions() {
         tableId={selectedCheckerId}
         customerName={selectedCustomerName}
         orderType="online"
+        transactionId={selectedTransactionId}
       />
     </div>
   );

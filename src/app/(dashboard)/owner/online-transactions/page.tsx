@@ -132,7 +132,7 @@ export default function KasirOwnerOnlineTransactions() {
 
       {/* MODAL TOLAK */}
       <Modal isOpen={isRejectModalOpen} onClose={() => setIsRejectModalOpen(false)} title="Alasan Penolakan">
-        <textarea onChange={(e) => setReason(e.target.value)} className="w-full border border-gray-200 p-4 rounded-xl bg-gray-50 focus:border-red-500 outline-none min-h-[100px]" placeholder="Sebutkan alasan penolakan secara jelas..." />
+        <textarea onChange={(e) => setReason(e.target.value)} className="w-full border border-gray-200 p-4 rounded-xl bg-gray-50 focus:border-red-500 outline-none min-h-25" placeholder="Sebutkan alasan penolakan secara jelas..." />
         <button onClick={async () => {
           await rejectOnlineOrder(selectedTx!.id, reason);
           toast.success("Pesanan berhasil ditolak.");
