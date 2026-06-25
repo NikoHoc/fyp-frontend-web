@@ -367,7 +367,7 @@ function OwnerPosPageContent() {
         onClose={() => setIsPaymentModalOpen(false)}
         transactionId={transactionId}
         tableId={
-          initialType === "takeaway" 
+          orderType === "takeaway" 
             ? "Bungkus" 
             : `Meja ${tableNumber || tableId || "-"}`
         }

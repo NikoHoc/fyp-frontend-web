@@ -1,4 +1,4 @@
-import { formatRupiah, formatDateTime } from "@/utils/format";
+import { formatRupiah, formatDateFull } from "@/utils/format";
 import { Expense } from "@/types";
 import { TrendingDown } from "lucide-react";
 
@@ -31,7 +31,7 @@ export default function CompactExpenseTable({ expenses }: Props) {
                   <td className="px-4 py-4 text-center">{index+1}</td>
                   <td className="px-4 py-4">
                     <div className="font-bold text-gray-800">{exp.item_name}</div>
-                    <div className="text-[10px] text-gray-400">{formatDateTime(exp.expense_date)}</div>
+                    <div className="text-[10px] text-gray-400">{formatDateFull(exp.expense_date)}</div>
                   </td>
                   <td className="px-4 py-4 text-right font-bold text-red-600">
                     {formatRupiah(exp.amount)}

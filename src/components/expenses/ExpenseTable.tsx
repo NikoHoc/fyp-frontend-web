@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { Search, Pencil, Trash2, TrendingDown, Activity, CheckCircle2, Clock, Plus } from "lucide-react";
 import { Expense } from "@/types";
-import { formatRupiah, formatDateTime } from "@/utils/format";
+import { formatRupiah, formatDateFull } from "@/utils/format";
 
 interface Props {
   data: Expense[];
@@ -106,7 +106,7 @@ export default function ExpenseTable({ data, isLoading, startDate, endDate, onEd
                 filtered.map((expense, index) => (
                   <tr key={expense.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 font-bold text-gray-800 text-center">{index+1}</td>
-                    <td className="px-6 py-4 text-gray-500 font-medium">{formatDateTime(expense.expense_date)}</td>
+                    <td className="px-6 py-4 text-gray-500 font-medium">{formatDateFull(expense.expense_date)}</td>
                     <td className="px-6 py-4 font-bold text-gray-800">{expense.item_name}</td>
                     <td className="px-6 py-4 font-bold text-gray-600">{expense.quantity} {expense.unit}</td>
                     <td className="px-6 py-4 font-black text-red-500">{formatRupiah(expense.amount)}</td>

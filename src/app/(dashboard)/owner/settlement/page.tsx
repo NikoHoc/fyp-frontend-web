@@ -117,7 +117,7 @@ export default function OwnerSettlementPage() {
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={handleProcessSettlement}
         title="Konfirmasi Tutup Penjualan"
-        message={`Apakah Anda yakin ingin melakukan proses Settlement? Aksi ini akan merekap ${transactions?.length} transaksi & ${expenses?.length} untuk hari ini.`}
+        message={`Apakah Anda yakin ingin melakukan proses Settlement? Aksi ini akan merekap ${transactions?.length} transaksi & ${expenses?.length} pengeluaran untuk hari ini.`}
         type="warning"
         confirmText="Ya, Tutup Kasir"
         isLoading={isSubmitting}

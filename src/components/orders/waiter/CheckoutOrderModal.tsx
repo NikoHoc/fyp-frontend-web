@@ -5,6 +5,8 @@ import { Printer, ClipboardList, Filter } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import { CartItem } from "@/types";
 import { printCheckerHTML } from "@/utils/printHandler";
+import { useTransaction } from "@/hooks/useTransaction";
+import toast from "react-hot-toast";
 
 interface CheckoutOrderModalProps {
   isOpen: boolean;
@@ -13,6 +15,7 @@ interface CheckoutOrderModalProps {
   tableId: string | null;
   customerName: string | null;
   orderType?: "dining" | "takeaway" | "online" | string;
+  transactionId: string;
 }
 
 type FilterType = "all" | "food" | "drink";
@@ -23,12 +26,15 @@ export default function CheckoutOrderModal({
   cartItems,
   tableId,
   customerName,
-  orderType
+  orderType,
+  transactionId
 }: CheckoutOrderModalProps) {
   const [selectedBatch, setSelectedBatch] = useState<number | "all">("all");
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [activeTab, setActiveTab] = useState<"pesanan" | "preview">("pesanan");
   const printRef = useRef<HTMLDivElement>(null);
+
+  const { updateItemsPrintStatus, isProcessing } = useTransaction();
 
   const { savedBatches, batchNumbers } = useMemo(() => {
     const saved = cartItems.filter((item) => item.is_saved);
@@ -92,9 +98,22 @@ export default function CheckoutOrderModal({
     return "CHECKER";
   };
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     const content = printRef.current?.innerHTML;
     if (!content) return;
+
+    const itemIdsToUpdate = previewItems
+        .filter(item => item.id && !item.is_printed)
+        .map(item => Number(item.id));
+
+    if (itemIdsToUpdate.length > 0) {
+      try {
+        await updateItemsPrintStatus(transactionId, itemIdsToUpdate);
+      } catch (error) {
+        toast.error("Gagal memperbarui status print");
+        return;
+      }
+    }
 
     printCheckerHTML(content, `Checker - ${getReceiptTitle()}`);
   };
@@ -162,12 +181,23 @@ export default function CheckoutOrderModal({
                     <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">BATCH {batchNum}</h4>
                     <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden divide-y divide-gray-50 shadow-sm">
                       {items.map((item, idx) => (
-                        <div key={idx} className="p-3">
-                          <h4 className="font-bold text-gray-800 text-sm leading-tight">
-                            {item.quantity}  {item.menu.name}
-                          </h4>
-                          {item.is_half_portion && <p className="text-[10px] font-bold text-purple-600 mt-1 uppercase"># 1/2 Porsi</p>}
-                          {item.note && <p className="text-[10px] text-orange-500 mt-1 uppercase"># {item.note}</p>}
+                        <div key={idx} className="p-3 flex justify-between items-center">
+                          <div>
+                            <h4 className="font-bold text-gray-800 text-sm leading-tight">
+                              {item.quantity}  {item.menu.name}
+                            </h4>
+                            {item.is_half_portion && <p className="text-[10px] font-bold text-purple-600 mt-1 uppercase"># 1/2 Porsi</p>}
+                            {item.note && <p className="text-[10px] text-orange-500 mt-1 uppercase"># {item.note}</p>}
+                          </div>
+                          
+                          {/* Indikator Printed */}
+                          <span className={`text-[9px] px-2 py-1 rounded-full font-bold uppercase shrink-0 ${
+                            item.is_printed 
+                              ? "bg-green-100 text-green-700" 
+                              : "bg-orange-100 text-orange-600"
+                          }`}>
+                            {item.is_printed ? "Sudah Diprint" : "Belum Diprint"}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -242,7 +272,7 @@ export default function CheckoutOrderModal({
             <div className="w-full max-w-[320px] mt-6 space-y-3">
               <button
                 onClick={handlePrint}
-                disabled={previewItems.length === 0}
+                disabled={previewItems.length === 0 || isProcessing}
                 className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-sm hover:bg-blue-700 shadow-lg shadow-blue-200 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
               >
                 <Printer size={18} /> CETAK KE {getReceiptTitle()}

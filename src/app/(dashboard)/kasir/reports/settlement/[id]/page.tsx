@@ -8,7 +8,7 @@ import { useSettlement } from "@/hooks/useSettlement";
 import DailySummaryCards from "@/components/settlements/DailySummaryCards";
 import PaymentBreakdownTable from "@/components/settlements/PaymentBreakdownTable";
 import DailyTransactionTable from "@/components/settlements/DailyTransactionTable";
-import { formatDateFull } from "@/utils/format";
+import { formatDateTime } from "@/utils/format";
 import ReportTransactionModal from "@/components/settlements/ReportTransactionModal";
 import ReportSettlementPrintModal from "@/components/settlements/ReportSettlementPrintModal";
 import { useSession } from "@/contexts/SessionContext"
@@ -54,7 +54,7 @@ export default function SettlementDetailPage() {
             </h1>
             <p className="text-sm text-gray-500 mt-1 font-medium">
               Laporan tanggal:{" "}
-              {formatDateFull(settlement?.settlement_date || "")}
+              {formatDateTime(settlement?.settlement_date || "")}
             </p>
           </div>
         </div>

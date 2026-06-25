@@ -172,6 +172,19 @@ export const useTransaction = () => {
     }
   };
 
+  const updateItemsPrintStatus = async (transactionId: string, itemIds: number[]) => {
+    setIsProcessing(true);
+    try {
+      const res = await transactionService.updateItemsPrintStatus(transactionId, itemIds);
+      return res;
+    } catch (error) {
+      handleApiError(error, "Gagal memperbarui status print");
+      throw error;
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return {
     isLoading,
     isProcessing,
@@ -186,6 +199,7 @@ export const useTransaction = () => {
     updateItemQuantity,
     deleteTransactionItem,
     acceptOnlineOrder,
-    rejectOnlineOrder
+    rejectOnlineOrder,
+    updateItemsPrintStatus
   };
 };

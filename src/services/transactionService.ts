@@ -79,4 +79,11 @@ export const transactionService = {
     });
     return response.data;
   },
+
+  updateItemsPrintStatus: async (transactionId: string, itemIds: number[]) => {
+    const response = await api.put(`/transactions/${transactionId}/print-items`, {
+      item_ids: itemIds
+    });
+    return response.data;
+  },
 };

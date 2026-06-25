@@ -221,7 +221,10 @@ export default function OrderCart({
 
         <div className="grid grid-cols-2 gap-2">
           <button onClick={onSave} disabled={unsavedItems.length === 0 || isProcessing} className="flex items-center justify-center gap-2 py-3 bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 disabled:opacity-30 rounded-xl font-bold transition-all"><ChefHat size={18} /> Simpan</button>
-          <button onClick={onCheckout} disabled={cartItems.length === 0} className="flex items-center justify-center gap-2 py-3 bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-30 rounded-xl font-bold transition-all">
+          <button 
+            onClick={onCheckout} 
+            disabled={!cartItems.some(item => item.is_saved) || unsavedItems.length > 0}
+            className="flex items-center justify-center gap-2 py-3 bg-gray-800 text-white hover:bg-gray-900 disabled:opacity-30 rounded-xl font-bold transition-all">
             {variant === "kasir" ? <Banknote size={18} /> : <ScrollText size={18} />}
             {variant === "kasir" ? "Checkout" : "Opsi / Cetak"}
           </button>

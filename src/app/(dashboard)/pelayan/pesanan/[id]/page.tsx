@@ -153,6 +153,7 @@ function PelayanPesananContent() {
             price_at_time: item.price_at_time,
             created_at: item.created_at,
             serve_status: item.serve_status || 'cooking',
+            is_printed: item.is_printed || false,
             menu: {
               ...item.menus,
               id: item.menu_id,
@@ -352,6 +353,7 @@ function PelayanPesananContent() {
         tableId={tableNumber || tableId || ""}
         customerName={customerName}
         orderType={orderType}
+        transactionId={transactionId}
       />
     </div>
   );

@@ -168,6 +168,7 @@ export interface CartItem extends CartItemPayload {
   quantity_paid: number;
   price_at_time: number;
   serve_status?: 'cooking' | 'served';
+  is_printed?: boolean;
 }
 
 export interface AddItemsPayload {
