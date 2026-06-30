@@ -11,6 +11,7 @@ import { useTransaction } from "@/hooks/useTransaction";
 
 interface OrderCartProps {
   variant: "kasir" | "pelayan";
+  transactionType?: "dining" | "takeaway" | "online" | string;
   cartItems: CartItem[];
   isProcessing: boolean;
   totals?: {
@@ -23,12 +24,14 @@ interface OrderCartProps {
   onUpdateQuantity: (uniqueId: string, delta: number) => void;
   onUpdateNote: (uniqueId: string, note: string) => void;
   onToggleHalf: (uniqueId: string) => void;
+  onToggleTakeaway?: (uniqueId: string) => void; // PROPS BARU
   onRemove: (uniqueId: string) => void;
   onRefresh?: () => void;
 }
 
 export default function OrderCart({
   variant,
+  transactionType = "dining", // Default fallback
   cartItems,
   isProcessing,
   totals,
@@ -37,6 +40,7 @@ export default function OrderCart({
   onUpdateQuantity,
   onUpdateNote,
   onToggleHalf,
+  onToggleTakeaway,
   onRemove,
   onRefresh
 }: OrderCartProps) {
@@ -105,7 +109,6 @@ export default function OrderCart({
           </div>
         ) : (
           <>
-            {/* SECTION 1: PESANAN BARU (UNSAVED) */}
             {unsavedItems.length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-2">
@@ -114,26 +117,37 @@ export default function OrderCart({
                 </h4>
                 <div className="bg-blue-50/30 border border-blue-100 rounded-2xl overflow-hidden divide-y divide-blue-100 shadow-sm">
                   {unsavedItems.map((item) => (
-                    <div key={item.unique_id} className="p-3 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <h5 className="font-bold text-gray-800 text-sm">{item.menu.name}</h5>
-                        {variant === "kasir" && (
-                          <p className="text-xs font-bold text-blue-600">
-                            {formatRupiah((item.is_half_portion ? item.menu.half_price || 0 : item.menu.price) * item.quantity)}
-                          </p>
-                        )}
+                    <div key={item.unique_id} className="p-3 flex flex-col gap-2">
+                      
+                      <div className="flex justify-between items-start gap-2">
+                        <h5 className="font-bold text-gray-800 text-sm leading-tight flex-1">{item.menu.name}</h5>
+                        <div className="flex items-center gap-2 shrink-0">
+                          {variant === "kasir" && (
+                            <p className="text-xs font-bold text-blue-600">
+                              {formatRupiah((item.is_half_portion ? item.menu.half_price || 0 : item.menu.price) * item.quantity)}
+                            </p>
+                          )}
+                          <button onClick={() => onRemove(item.unique_id)} className="text-red-400 hover:text-white bg-white hover:bg-red-500 border border-red-100 p-1 rounded transition-colors">
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center bg-white border border-blue-100 rounded-lg p-0.5">
+                      <div className="flex items-center justify-between w-full gap-2">
+                        <div className="flex items-center bg-white border border-blue-100 rounded-lg p-0.5 shrink-0">
                           <button onClick={() => onUpdateQuantity(item.unique_id, -1)} className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"><Minus size={14} /></button>
                           <span className="w-8 text-center font-bold text-sm">{item.quantity}</span>
                           <button onClick={() => onUpdateQuantity(item.unique_id, 1)} className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"><Plus size={14} /></button>
                         </div>
-                        <button onClick={() => onRemove(item.unique_id)} className="text-red-400 hover:text-red-600 p-2 bg-white border border-red-50 rounded-lg transition-colors">
-                          <Trash2 size={14} />
-                        </button>
+                        {item.menu.half_price && (
+                          <button 
+                            onClick={() => onToggleHalf(item.unique_id)} 
+                            className={`shrink-0 px-3 text-[10px] py-1.5 rounded-lg font-bold transition-colors ${item.is_half_portion ? "bg-blue-600 text-white" : "bg-white border border-blue-100 text-gray-400"}`} 
+                          >
+                            1/2 PORSI
+                          </button>
+                        )}
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 w-full">
                         <input 
                           type="text" 
                           placeholder="Catatan..." 
@@ -141,12 +155,12 @@ export default function OrderCart({
                           onChange={(e) => onUpdateNote(item.unique_id, e.target.value)} 
                           className="flex-1 text-[11px] p-2 bg-white border border-blue-100 rounded-lg outline-none focus:ring-1 focus:ring-blue-400 italic" 
                         />
-                        {item.menu.half_price && (
+                        {transactionType === "dining" && onToggleTakeaway && (
                           <button 
-                            onClick={() => onToggleHalf(item.unique_id)} 
-                            className={`text-[9px] px-2 py-2 rounded-lg font-bold whitespace-nowrap transition-colors ${item.is_half_portion ? "bg-blue-600 text-white" : "bg-white border border-blue-100 text-gray-400"}`}
+                            onClick={() => onToggleTakeaway(item.unique_id)} 
+                            className={`shrink-0 text-[10px] px-3 py-2 rounded-lg font-bold transition-colors whitespace-nowrap ${item.is_takeaway ? "bg-orange-500 border border-orange-500 text-white" : "bg-white border border-blue-100 text-gray-400"}`}
                           >
-                            1/2 PORSI
+                            BUNGKUS
                           </button>
                         )}
                       </div>
@@ -162,16 +176,26 @@ export default function OrderCart({
                   {items.map((item) => (
                     <div key={item.id} className="p-3 flex justify-between items-start">
                       <div className="space-y-0.5">
-                        <h5 className="font-bold text-gray-800 text-sm leading-tight">
-                          {item.quantity} {item.menu.name}
-                          {item.is_half_portion && <span className="ml-1 text-[9px] text-red-600 font-bold uppercase">[1/2]</span>}
+                        <h5 className="font-bold text-gray-800 text-sm leading-tight flex items-start gap-1">
+                          <span>{item.quantity}</span>
+                          <span>{item.menu.name}</span>
                         </h5>
+                      
+                        {item.is_takeaway && transactionType === "dining" && (
+                          <p className="text-[10px] text-orange-600 font-bold uppercase mt-1"># BUNGKUS</p>
+                        )}
+                        {item.is_half_portion && (
+                          <p className="text-[10px] text-purple-600 font-bold uppercase"># 1/2 PORSI</p>
+                        )}
+                        {item.note && (
+                          <p className="text-[10px] text-gray-500 italic font-bold uppercase"># {item.note}</p>
+                        )}
+                        
                         {variant === "kasir" && (
-                          <p className="text-[11px] font-bold text-gray-400">
+                          <p className="text-[11px] font-bold text-gray-400 mt-1">
                             {formatRupiah(item.price_at_time * item.quantity)}
                           </p>
                         )}
-                        {item.note && <p className="text-[10px] text-orange-400 italic font-bold"># {item.note}</p>}
                       </div>
 
                       <div className="flex items-center gap-2">

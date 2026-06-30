@@ -79,11 +79,13 @@ export default function OrderItemList({
                             <h4 className="font-bold text-gray-800 text-sm truncate">{item.name}</h4>
                             <p className="text-blue-600 font-semibold text-sm">{formatRupiah(item.price)}</p>
                             
-                            {/* Layout Sejajar: 1/2 Porsi dan Catatan */}
-                            {(item.is_half_portion || item.note) && (
+                            {(item.is_takeaway || item.is_half_portion || item.note) && (
                               <div className="flex items-center gap-2 mt-1.5 overflow-hidden">
+                                {item.is_takeaway && (
+                                  <p className="text-[10px] bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0">BUNGKUS</p>
+                                )}
                                 {item.is_half_portion && (
-                                  <span className="text-[9px] bg-red-100 text-red-500 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0">
+                                  <span className="text-[10px] bg-red-100 text-red-500 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider shrink-0">
                                     1/2 Porsi
                                   </span>
                                 )}
@@ -98,7 +100,6 @@ export default function OrderItemList({
                           
                           <div className="flex flex-col items-end shrink-0">
                             <span className="text-[10px] text-gray-500 mb-1.5 font-medium">Sisa: {qtyAvailable}</span>
-                            {/* Layout Sejajar: Min, Qty, Plus */}
                             <div className={`flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg p-1 ${selectAll ? "opacity-50" : ""}`}>
                               <button onClick={() => handleRemoveFromNota(item.id)} disabled={item.qtyInNota === 0 || selectAll} className="w-7 h-7 flex items-center justify-center rounded bg-white shadow-sm text-gray-600 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed">
                                 <Minus size={14} />

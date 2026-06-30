@@ -186,6 +186,9 @@ export default function CheckoutOrderModal({
                             <h4 className="font-bold text-gray-800 text-sm leading-tight">
                               {item.quantity}  {item.menu.name}
                             </h4>
+                            {item.is_takeaway && (
+                              <p className="text-[10px] font-bold text-orange-600 mt-1 uppercase"># BUNGKUS</p>
+                            )}
                             {item.is_half_portion && <p className="text-[10px] font-bold text-purple-600 mt-1 uppercase"># 1/2 Porsi</p>}
                             {item.note && <p className="text-[10px] text-orange-500 mt-1 uppercase"># {item.note}</p>}
                           </div>
@@ -262,6 +265,9 @@ export default function CheckoutOrderModal({
                         <span className="w-6 font-bold">{item.quantity}</span>
                         <span className="font-bold">{item.menu.name}</span>
                       </div>
+                      {item.is_takeaway && (
+                        <div className="pl-8 font-bold mt-1"># BUNGKUS</div>
+                      )}
                       {item.is_half_portion && <div className="pl-8 font-bold mt-1"># 1/2 PORSI</div>}
                       {item.note && <div className="pl-8 mt-1 uppercase"># {item.note}</div>}
                     </div>

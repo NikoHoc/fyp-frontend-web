@@ -8,7 +8,12 @@ export const useCart = () => {
   const addItem = (menu: Menu, isHalfPortion: boolean = false) => {
     setCartItems((prev) => {
       const existingItemIndex = prev.findIndex(
-        (item) => item.menu_id === menu.id && item.is_half_portion === isHalfPortion && !item.note && !item.is_saved
+        (item) => 
+          item.menu_id === menu.id && 
+          item.is_half_portion === isHalfPortion && 
+          !item.note && 
+          !item.is_saved &&
+          item.is_takeaway === false
       );
 
       if (existingItemIndex >= 0) {
@@ -31,6 +36,7 @@ export const useCart = () => {
           is_saved: false,
           quantity_paid: 0,
           price_at_time: isHalfPortion && menu.half_price ? menu.half_price : menu.price,
+          is_takeaway: false,
         },
       ];
     });
@@ -69,6 +75,17 @@ export const useCart = () => {
     );
   };
 
+  const toggleTakeaway = (uniqueId: string) => {
+    setCartItems((prev) =>
+      prev.map((item) => {
+        if (item.unique_id === uniqueId) {
+          return { ...item, is_takeaway: !item.is_takeaway };
+        }
+        return item;
+      })
+    );
+  };
+
   const clearCart = () => {
     setCartItems([]);
   };
@@ -97,6 +114,7 @@ export const useCart = () => {
     updateQuantity,
     updateNote,
     toggleHalfPortion,
+    toggleTakeaway,
     clearCart,
     totals,
   };

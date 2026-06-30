@@ -100,6 +100,7 @@ export interface TransactionItem {
   created_at?: string;
   menus?: Menu;
   serve_status?: 'cooking' | 'served';
+  is_takeaway?: boolean;
 }
 
 export interface Transaction {
@@ -158,6 +159,7 @@ export interface CartItemPayload {
   note?: string;
   batch_number?: number;
   created_at?: string;
+  is_takeaway?: boolean;
 }
 
 export interface CartItem extends CartItemPayload {
@@ -169,6 +171,7 @@ export interface CartItem extends CartItemPayload {
   price_at_time: number;
   serve_status?: 'cooking' | 'served';
   is_printed?: boolean;
+  is_takeaway?: boolean;
 }
 
 export interface AddItemsPayload {

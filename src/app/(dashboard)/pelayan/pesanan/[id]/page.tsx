@@ -50,6 +50,7 @@ function PelayanPesananContent() {
     updateQuantity,
     updateNote,
     toggleHalfPortion,
+    toggleTakeaway
   } = useCart();
 
   useEffect(() => {
@@ -154,6 +155,7 @@ function PelayanPesananContent() {
             created_at: item.created_at,
             serve_status: item.serve_status || 'cooking',
             is_printed: item.is_printed || false,
+            is_takeaway: item.is_takeaway || false,
             menu: {
               ...item.menus,
               id: item.menu_id,
@@ -229,6 +231,7 @@ function PelayanPesananContent() {
           is_half_portion: item.is_half_portion,
           note: item.note,
           batch_number: 1,
+          is_takeaway: item.is_takeaway || false,
         }));
 
         const response = await createTransaction({
@@ -259,6 +262,7 @@ function PelayanPesananContent() {
               is_half_portion: item.is_half_portion,
               note: item.note,
               batch_number: nextBatchNumber,
+              is_takeaway: item.is_takeaway || false,
             })),
           };
 
@@ -337,9 +341,11 @@ function PelayanPesananContent() {
         variant="pelayan"
         cartItems={cartItems}
         isProcessing={isProcessing}
+        transactionType={orderType}
         onUpdateQuantity={updateQuantity}
         onUpdateNote={updateNote}
         onToggleHalf={toggleHalfPortion}
+        onToggleTakeaway={toggleTakeaway}
         onRemove={removeItem}
         onSave={handleSimpanPesanan}
         onCheckout={() => setCheckoutOrderModalOpen(true)}

@@ -23,6 +23,7 @@ export interface CheckoutItem {
   is_half_portion?: boolean;
   note?: string;
   batch_number?: number;
+  is_takeaway?: boolean;
 }
 interface CheckoutPaymentModalProps {
   isOpen: boolean;
@@ -87,6 +88,7 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
           qtyPaid: item.quantity_paid || 0,
           qtyInNota: 0,
           is_half_portion: item.is_half_portion,
+          is_takeaway: item.is_takeaway,
           note: item.note,
           batch_number: Number(item.batch_number) || 1,
         }));
@@ -101,6 +103,7 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
             price: pi.price_at_time,
             qty: pi.quantity,
             is_half_portion: originalCartItem?.is_half_portion,
+            is_takeaway: originalCartItem?.is_takeaway,
             note: originalCartItem?.note,
           };
         }) || [];
@@ -279,7 +282,7 @@ export default function CheckoutPaymentModal({ isOpen, onClose, cartItems, trans
     const grouped: Record<string, ReceiptItem> = {};
     
     itemsToAggregate.forEach(item => {
-      const uniqueKey = `${item.name}_${item.is_half_portion}_${item.note || ''}`;
+      const uniqueKey = `${item.name}_${item.is_half_portion}_${item.is_takeaway}_${item.note || ''}`;
       
       if (!grouped[uniqueKey]) {
         grouped[uniqueKey] = { ...item }; 

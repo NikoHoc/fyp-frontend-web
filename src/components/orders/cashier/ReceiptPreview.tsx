@@ -10,6 +10,7 @@ export interface ReceiptItem {
   price: number;
   qty: number;
   is_half_portion?: boolean;
+  is_takeaway?: boolean;
   note?: string;
   [key: string]: unknown; 
 }
@@ -160,6 +161,9 @@ export default function ReceiptPreview({
 
                 {/* Detail 1/2 porsi & Note dengan indentasi satu tab (pl-10) */}
                 <div className="item-detail pl-5 opacity-90 italic text-[10px] space-y-0.5">
+                  {item.is_takeaway && (
+                    <div className="font-bold"># BUNGKUS</div>
+                  )}
                   {item.is_half_portion && (
                     <div># 1/2 PORSI</div>
                   )}

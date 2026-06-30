@@ -44,7 +44,7 @@ function PosPageContent() {
   const [existingPayments, setExistingPayments] = useState<TransactionPayment[]>([]);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  const { cartItems, setCartItems, addItem, removeItem, updateQuantity, updateNote, toggleHalfPortion, totals } = useCart();
+  const { cartItems, setCartItems, addItem, removeItem, updateQuantity, updateNote, toggleHalfPortion, toggleTakeaway, totals } = useCart();
 
   useEffect(() => {
     const loadData = async () => {
@@ -156,6 +156,7 @@ function PosPageContent() {
             is_saved: true,
             batch_number: item.batch_number,
             serve_status: item.serve_status || 'cooking',
+            is_takeaway: item.is_takeaway || false,
             menu: {
               ...item.menus,
               id: item.menu_id,
@@ -237,6 +238,7 @@ function PosPageContent() {
           is_half_portion: item.is_half_portion,
           note: item.note,
           batch_number: 1,
+          is_takeaway: item.is_takeaway || false,
         }));
 
         const response = await createTransaction({
@@ -270,6 +272,7 @@ function PosPageContent() {
               is_half_portion: item.is_half_portion,
               note: item.note,
               batch_number: nextBatchNumber,
+              is_takeaway: item.is_takeaway || false,
             })),
           };
 
@@ -348,11 +351,13 @@ function PosPageContent() {
       <OrderCart
         variant="kasir"
         cartItems={cartItems}
+        transactionType={orderType}
         isProcessing={isProcessing}
         totals={totals}
         onUpdateQuantity={updateQuantity}
         onUpdateNote={updateNote}
         onToggleHalf={toggleHalfPortion}
+        onToggleTakeaway={toggleTakeaway}
         onRemove={removeItem}
         onSave={handleSimpanPesanan}
         onCheckout={() => setIsPaymentModalOpen(true)}
